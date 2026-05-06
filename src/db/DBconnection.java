@@ -1,32 +1,24 @@
 package src.db;
 
-import java.sql.*;
+import java.sql.Connection;
+import java.sql.DriverManager;
 
 public class DBconnection {
-    public static void main(String[] args) {
 
-        String url = "jdbc:mysql://localhost:3306/HOSPITAL_DB";
-        String user = "root";
-        String password = "Subhan@9704"; // your password
+    public static Connection getConnection() {
 
         try {
-            Connection con = DriverManager.getConnection(url, user, password);
-            System.out.println("✅ Connected to Database!");
-            Statement stmt = con.createStatement();
-            String query ="INSERT INTO PATIENT VALUES (102,'ANY 2','FEVER')";
-            stmt.executeUpdate(query);
-            ResultSet rs = stmt.executeQuery("SELECT * FROM PATIENT");
+            Connection con = DriverManager.getConnection(
+                "jdbc:mysql://localhost:3306/hospital_db",
+                "root",
+                "Subhan@9704"   // My sql password
+            );
 
-            while (rs.next()) {
-                System.out.print(rs.getInt("ID"));
-                System.out.print(" ");
-                System.out.print(rs.getString("name"));
-                System.out.print(" ");
-                System.out.println(rs.getString("DISEASE"));
-            }            
+            return con;
 
         } catch (Exception e) {
-            System.out.println("❌ Error: " + e);
+            e.printStackTrace();
+            return null;
         }
     }
 }
