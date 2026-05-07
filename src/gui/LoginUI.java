@@ -72,8 +72,9 @@ public class LoginUI extends JFrame
         userLabel.setFont(new Font("Segoe UI",Font.BOLD,14));
         userLabel.setForeground(fgColor);
 
-        JTextField usernameField = new JTextField();
+        RoundedTextField usernameField = new RoundedTextField(20);
         usernameField.setBounds(150, 200, 200, 30);
+        usernameField.setMargin(new Insets(5, 10, 5, 10));
 
         // password label and password field which cannot show password
         JLabel passLabel = new JLabel("Password:");
@@ -81,7 +82,7 @@ public class LoginUI extends JFrame
         passLabel.setFont(new Font("Segoe UI",Font.BOLD,14));
         passLabel.setForeground(fgColor);
 
-        JPasswordField passwordField = new JPasswordField();
+        RoundedPasswordField passwordField = new RoundedPasswordField(20);
         passwordField.setBounds(150, 250, 200, 30);
 
         // role label and role combo box which use to show the list of roles
@@ -91,20 +92,22 @@ public class LoginUI extends JFrame
         roleLabel.setForeground(fgColor);       
 
         String[] roles = {"Admin", "Doctor", "Receptionist"};
-        JComboBox<String> roleBox = new JComboBox<>(roles);
-        roleBox.setBounds(150, 300, 200, 30);
+        RoundedComboBox<String> roleBox = new RoundedComboBox<>(roles);
+        roleBox.setBounds(150, 300, 200, 40);
         roleBox.setFont(new Font("Segoe UI",Font.BOLD,12));
         roleBox.setForeground(Color.BLACK);
 
         // login button 
-        JButton loginBtn = new JButton("Login");
+        RoundedButton loginBtn = new RoundedButton("Login");
         loginBtn.setBounds(100, 370, 100, 40);
+        loginBtn.setMargin(new Insets(5, 10, 5, 10));
         loginBtn.setBackground(fgColor);
         loginBtn.setForeground(bgColor);
 
         // Singup button
-        JButton signupBtn = new JButton("Signup");
+        RoundedButton signupBtn = new RoundedButton("Signup");
         signupBtn.setBounds(250, 370, 100, 40);
+        signupBtn.setMargin(new Insets(5, 10, 5, 10));
         signupBtn.setBackground(fgColor);
         signupBtn.setForeground(bgColor);
 
@@ -137,7 +140,7 @@ public class LoginUI extends JFrame
             {
 
                 String user = usernameField.getText();
-                String pass = new String(passwordField.getPassword());
+                String pass = new String(passwordField.getText());
                 String role = (String) roleBox.getSelectedItem();
                 try 
                 {
@@ -171,6 +174,16 @@ public class LoginUI extends JFrame
                 {
                     ex.printStackTrace();
                 }
+            }
+        });
+
+        signupBtn.addActionListener( new ActionListener() 
+        {
+            
+            public void actionPerformed(ActionEvent e)
+            {
+                new SignupUI();
+                dispose();
             }
         });
 
