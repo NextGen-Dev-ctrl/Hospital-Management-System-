@@ -1,13 +1,10 @@
 package src.gui;
 
 import javax.swing.*;
-import javax.swing.text.MaskFormatter;
-import java.text.ParseException;
 import java.awt.*;
 import java.awt.event.*;
 import java.sql.*;
 import src.db.DBconnection;
-import src.gui.*;
 
 public class SignupUI extends JFrame 
 {
