@@ -61,7 +61,7 @@ public class LoginUI extends JFrame
         rightPanel.setLayout(null);
 
         // Main title We display the hospital name there
-        JLabel title = new JLabel("MediCore Hospital");
+        JLabel title = new JLabel("MediSync HMS");
         title.setBounds(50, 100, 500, 80);
         title.setFont(new Font("Segoe UI", Font.BOLD, 40));
         title.setForeground(fgColor); // use the main forground color here

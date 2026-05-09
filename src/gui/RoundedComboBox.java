@@ -6,14 +6,30 @@ import java.awt.*;
 
 public class RoundedComboBox<E> extends JComboBox<E> {
 
+    // ✅ Empty constructor (like default JComboBox)
+    public RoundedComboBox() {
+        super();
+        initUI();
+    }
+
+    // ✅ Constructor with array (your original one)
     public RoundedComboBox(E[] items) {
         super(items);
+        initUI();
+    }
 
+    // ✅ Constructor with ComboBoxModel (like new JComboBox(model))
+    public RoundedComboBox(ComboBoxModel<E> model) {
+        super(model);
+        initUI();
+    }
+
+    // Shared UI setup
+    private void initUI() {
         setOpaque(false);
         setFocusable(false);
         setBackground(Color.WHITE);
         setForeground(Color.BLACK);
-
         setFont(new Font("Segoe UI", Font.PLAIN, 14));
 
         // Padding
@@ -21,24 +37,19 @@ public class RoundedComboBox<E> extends JComboBox<E> {
 
         // Custom UI
         setUI(new javax.swing.plaf.basic.BasicComboBoxUI() {
-
             @Override
             protected JButton createArrowButton() {
-
                 JButton button = new JButton("▼");
-
                 button.setBorder(BorderFactory.createEmptyBorder());
                 button.setContentAreaFilled(false);
                 button.setFocusPainted(false);
                 button.setForeground(Color.GRAY);
-
                 return button;
             }
         });
 
         // Renderer for rounded dropdown items
         setRenderer(new DefaultListCellRenderer() {
-
             @Override
             public Component getListCellRendererComponent(
                     JList<?> list,
@@ -60,7 +71,6 @@ public class RoundedComboBox<E> extends JComboBox<E> {
 
     @Override
     protected void paintComponent(Graphics g) {
-
         Graphics2D g2 = (Graphics2D) g.create();
 
         g2.setRenderingHint(
@@ -72,13 +82,11 @@ public class RoundedComboBox<E> extends JComboBox<E> {
         g2.fillRoundRect(0, 0, getWidth(), getHeight(), 25, 25);
 
         super.paintComponent(g2);
-
         g2.dispose();
     }
 
     @Override
     protected void paintBorder(Graphics g) {
-
         Graphics2D g2 = (Graphics2D) g.create();
 
         g2.setRenderingHint(
@@ -87,14 +95,7 @@ public class RoundedComboBox<E> extends JComboBox<E> {
 
         // Border color
         g2.setColor(new Color(200, 200, 200));
-
-        g2.drawRoundRect(
-                0,
-                0,
-                getWidth() - 1,
-                getHeight() - 1,
-                25,
-                25);
+        g2.drawRoundRect(0, 0, getWidth() - 1, getHeight() - 1, 25, 25);
 
         g2.dispose();
     }
