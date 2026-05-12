@@ -6,10 +6,8 @@ import java.awt.event.*;
 import java.sql.*;
 import src.db.DBconnection;
 
-public class LoginUI extends JFrame 
-{
-    public LoginUI() 
-    {
+public class LoginUI extends JFrame {
+    public LoginUI() {
         // Main panel with title hospital management on title bar user
         setTitle("Hospital Management System");
 
@@ -17,20 +15,18 @@ public class LoginUI extends JFrame
         setLocationRelativeTo(null);
         setDefaultCloseOperation(EXIT_ON_CLOSE);
 
-        Color bgColor = Color.decode("#F2EFE7");        //Background Color
-        Color fgColor = Color.decode("#00A19B");        //Forground Color
+        Color bgColor = Color.decode("#F2EFE7"); // Background Color
+        Color fgColor = Color.decode("#00A19B"); // Forground Color
 
         // MAIN PANEL (SPLIT) into the Border Layout
-       setLayout(new BorderLayout());
+        setLayout(new BorderLayout());
 
         // LEFT PANEL (IMAGE) we add the image in the left side
-        JPanel leftPanel = new JPanel() 
-        {
+        JPanel leftPanel = new JPanel() {
             Image image = new ImageIcon("images/login2.png").getImage();
 
             @Override
-            protected void paintComponent(Graphics g) 
-            {
+            protected void paintComponent(Graphics g) {
                 super.paintComponent(g);
 
                 int panelWidth = getWidth();
@@ -40,9 +36,8 @@ public class LoginUI extends JFrame
                 int imgHeight = image.getHeight(null);
 
                 double scale = Math.max(
-                (double) panelWidth / imgWidth,
-                (double) panelHeight / imgHeight
-                    );
+                        (double) panelWidth / imgWidth,
+                        (double) panelHeight / imgHeight);
 
                 int newWidth = (int) (imgWidth * scale);
                 int newHeight = (int) (imgHeight * scale);
@@ -54,7 +49,8 @@ public class LoginUI extends JFrame
             }
         };
 
-        // RIGHT PANEL (Main Login credentials) it contain usernanme password and role fields
+        // RIGHT PANEL (Main Login credentials) it contain usernanme password and role
+        // fields
         JPanel rightPanel = new JPanel();
         rightPanel.setPreferredSize(new Dimension(425, 0)); // we can adjust the right panel from here
         rightPanel.setBackground(bgColor);
@@ -62,14 +58,14 @@ public class LoginUI extends JFrame
 
         // Main title We display the hospital name there
         JLabel title = new JLabel("MediSync HMS");
-        title.setBounds(50, 100, 500, 80);
+        title.setBounds(70, 100, 500, 80);
         title.setFont(new Font("Segoe UI", Font.BOLD, 40));
         title.setForeground(fgColor); // use the main forground color here
 
         // username label and text field for input
         JLabel userLabel = new JLabel("Username:");
         userLabel.setBounds(70, 200, 100, 25);
-        userLabel.setFont(new Font("Segoe UI",Font.BOLD,14));
+        userLabel.setFont(new Font("Segoe UI", Font.BOLD, 14));
         userLabel.setForeground(fgColor);
 
         RoundedTextField usernameField = new RoundedTextField(20);
@@ -79,7 +75,7 @@ public class LoginUI extends JFrame
         // password label and password field which cannot show password
         JLabel passLabel = new JLabel("Password:");
         passLabel.setBounds(70, 250, 100, 25);
-        passLabel.setFont(new Font("Segoe UI",Font.BOLD,14));
+        passLabel.setFont(new Font("Segoe UI", Font.BOLD, 14));
         passLabel.setForeground(fgColor);
 
         RoundedPasswordField passwordField = new RoundedPasswordField(20);
@@ -88,16 +84,16 @@ public class LoginUI extends JFrame
         // role label and role combo box which use to show the list of roles
         JLabel roleLabel = new JLabel("Role:");
         roleLabel.setBounds(75, 300, 100, 25);
-        roleLabel.setFont(new Font("Segoe UI",Font.BOLD,14));
-        roleLabel.setForeground(fgColor);       
+        roleLabel.setFont(new Font("Segoe UI", Font.BOLD, 14));
+        roleLabel.setForeground(fgColor);
 
-        String[] roles = {"Admin", "Doctor", "Receptionist"};
+        String[] roles = { "Admin", "Doctor", "Receptionist" };
         RoundedComboBox<String> roleBox = new RoundedComboBox<>(roles);
         roleBox.setBounds(150, 300, 200, 40);
-        roleBox.setFont(new Font("Segoe UI",Font.BOLD,12));
+        roleBox.setFont(new Font("Segoe UI", Font.BOLD, 12));
         roleBox.setForeground(Color.BLACK);
 
-        // login button 
+        // login button
         RoundedButton loginBtn = new RoundedButton("Login");
         loginBtn.setBounds(100, 370, 100, 40);
         loginBtn.setMargin(new Insets(5, 10, 5, 10));
@@ -133,17 +129,14 @@ public class LoginUI extends JFrame
         add(rightPanel, BorderLayout.EAST);
         // Logic of the login button to check the enter username and password is correct
         // It can run the the SQL query to check three credential username password and
-        //role if all match then it can give access to the next portal
-        loginBtn.addActionListener(new ActionListener() 
-        {
-            public void actionPerformed(ActionEvent e) 
-            {
+        // role if all match then it can give access to the next portal
+        loginBtn.addActionListener(new ActionListener() {
+            public void actionPerformed(ActionEvent e) {
 
                 String user = usernameField.getText();
                 String pass = new String(passwordField.getText());
                 String role = (String) roleBox.getSelectedItem();
-                try 
-                {
+                try {
                     Connection con = DBconnection.getConnection();
 
                     String query = "SELECT * FROM users WHERE username=? AND password=? AND role=?";
@@ -155,33 +148,81 @@ public class LoginUI extends JFrame
 
                     ResultSet rs = pst.executeQuery();
 
-                    if (rs.next()) 
-                    {
-                        JOptionPane.showMessageDialog(null, "Login Successful!");
+                    if (rs.next()) {
 
-                        new DashboardUI(role);
-                        dispose();
-                    } 
-                    else 
-                    {
-                        JOptionPane.showMessageDialog(null, "Invalid Username or Password!");
+                        JOptionPane.showMessageDialog(
+                                null,
+                                "Login Successful!");
+
+                        // DOCTOR LOGIN
+                        if (role.equals("Doctor")) {
+
+                            String doctorQuery = "SELECT * FROM doctors " +
+                                    "WHERE username=? AND password=?";
+
+                            PreparedStatement doctorPst = con.prepareStatement(doctorQuery);
+
+                            doctorPst.setString(1, user);
+                            doctorPst.setString(2, pass);
+
+                            ResultSet doctorRs = doctorPst.executeQuery();
+
+                            if (doctorRs.next()) {
+
+                                int doctorId = doctorRs.getInt("doctor_id");
+
+                                String doctorName = doctorRs.getString("full_name");
+
+                                String specialization = doctorRs.getString("specialization");
+
+                                new DoctorDashboard(
+                                        doctorId,
+                                        doctorName,
+                                        specialization);
+
+                                dispose();
+                            }
+                        }
+
+                        // RECEPTIONIST LOGIN
+                        else if (role.equals("Receptionist")) {
+
+                            int receptionistId = rs.getInt("id");
+
+                            String receptionistNameText = rs.getString("fullname");
+
+                            new ReceptionistDashboard(
+                                    receptionistId,
+                                    receptionistNameText);
+
+                            dispose();
+                        }
+
+                        // OTHER ROLES
+                        else {
+
+                            new DashboardUI(role);
+
+                            dispose();
+                        }
+                    } else {
+
+                        JOptionPane.showMessageDialog(
+                                null,
+                                "Invalid Username or Password!");
                     }
 
                     con.close();
 
-                } 
-                catch (Exception ex) 
-                {
+                } catch (Exception ex) {
                     ex.printStackTrace();
                 }
             }
         });
 
-        signupBtn.addActionListener( new ActionListener() 
-        {
-            
-            public void actionPerformed(ActionEvent e)
-            {
+        signupBtn.addActionListener(new ActionListener() {
+
+            public void actionPerformed(ActionEvent e) {
                 new SignupUI();
                 dispose();
             }

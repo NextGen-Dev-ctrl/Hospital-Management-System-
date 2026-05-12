@@ -38,7 +38,12 @@ public class DoctorDashboard extends JFrame {
         private JLabel patient3Disease;
         private JLabel patient3Status;
 
-        public DoctorDashboard() {
+        // for the showing of doctor details according to it
+        private int doctorId;
+        private String doctorName;
+        private String specialization;
+
+        public DoctorDashboard(int doctorId, String doctorName, String specialization) {
                 // FRAME
                 setTitle("Doctor Dashboard");
                 setSize(1400, 800);
@@ -106,6 +111,15 @@ public class DoctorDashboard extends JFrame {
 
                 logoutBtn.addActionListener(e -> {
                         setActiveButton(logoutBtn);
+                        int confirm = JOptionPane.showConfirmDialog(
+                                        null,
+                                        "Are you sure you want to logout?",
+                                        "Logout Confirmation",
+                                        JOptionPane.YES_NO_OPTION);
+                        if (confirm == JOptionPane.YES_OPTION) {
+                                new LoginUI();
+                                dispose();
+                        }
                 });
 
                 // =========================
@@ -121,22 +135,32 @@ public class DoctorDashboard extends JFrame {
                 topBar.setBackground(Color.WHITE);
                 topBar.setLayout(null);
 
-                JLabel doctorName = new JLabel("<html>Dr. Sarah Connor<br>Cardiologist</html>");
-                doctorName.setBounds(800, 25, 200, 50);
-                doctorName.setFont(new Font("Segoe UI", Font.BOLD, 18));
-                doctorName.setForeground(primary);
+                this.doctorId = doctorId;
+                this.doctorName = doctorName;
+                this.specialization = specialization;
+
+                JLabel doctorInfo = new JLabel("<html>" + doctorName + "<br>" + specialization + "</html>");
+                doctorInfo.setBounds(800, 25, 200, 50);
+                doctorInfo.setFont(new Font("Segoe UI", Font.BOLD, 18));
+                doctorInfo.setForeground(primary);
 
                 JLabel profilePic = new JLabel();
-                profilePic.setBounds(950, 25, 40, 40);
-                profilePic.setIcon(new ImageIcon(new ImageIcon("images/profile_image.png").getImage()
-                                .getScaledInstance(50, 50, Image.SCALE_SMOOTH)));
+                profilePic.setBounds(960, 25, 40, 40);
+                ImageIcon icon = new ImageIcon(
+                                new ImageIcon("images/profile_image.png")
+                                                .getImage()
+                                                .getScaledInstance(50, 50, Image.SCALE_SMOOTH));
+                profilePic.setIcon(icon);
+
+                // ✅ Align icon to the right side of the label
+                profilePic.setHorizontalAlignment(SwingConstants.RIGHT);
 
                 JLabel dashboardTitle = new JLabel("Doctor Dashboard");
                 dashboardTitle.setBounds(30, 25, 200, 30);
                 dashboardTitle.setFont(new Font("Segoe UI", Font.BOLD, 18));
                 dashboardTitle.setForeground(darkText);
 
-                topBar.add(doctorName);
+                topBar.add(doctorInfo);
                 topBar.add(profilePic);
                 topBar.add(dashboardTitle);
                 // =========================
@@ -381,66 +405,6 @@ public class DoctorDashboard extends JFrame {
                 // patient in the queue and also add consultant notes and the prescriptions
                 // automatically
                 nextPatientBtn.addActionListener(e -> {
-
-                        // try {
-
-                        // Connection con =
-                        // DBconnection.getConnection();
-
-                        // String query =
-                        // "UPDATE patients SET " +
-                        // "notes = ?, " +
-                        // "status = 'Completed' " +
-                        // " WHERE patient_id = ?";
-
-                        // PreparedStatement pst =
-                        // con.prepareStatement(query);
-
-                        // // NOTES
-                        // if(notesArea.getText().trim().isEmpty()) {
-
-                        // pst.setNull(1, Types.NULL);
-
-                        // } else {
-
-                        // pst.setString(
-                        // 1,
-                        // notesArea.getText());
-                        // }
-
-                        // // // CURRENT PATIENT
-                        // pst.setInt(2, currentPatientId);
-
-                        // pst.executeUpdate();
-                        // String nextQuery =
-                        // "UPDATE patients SET status = 'Ready' " +
-                        // "WHERE patient_id = (" +
-                        // "SELECT patient_id FROM (" +
-                        // "SELECT patient_id FROM patients " +
-                        // "WHERE status = 'Pending' " +
-                        // "ORDER BY patient_id ASC " +
-                        // "LIMIT 1" +
-                        // ") temp)";
-
-                        // PreparedStatement pst2 =
-                        // con.prepareStatement(nextQuery);
-
-                        // pst2.executeUpdate();
-
-                        // loadPatientQueue();
-                        // loadNextPatient();
-
-                        // // CLEAR FIELDS
-                        // notesArea.setText("");
-
-                        // JOptionPane.showMessageDialog(
-                        // null,
-                        // "Patient Completed!");
-
-                        // } catch(Exception ex) {
-
-                        // ex.printStackTrace();
-                        // }
                         try {
 
                                 Connection con = DBconnection.getConnection();
@@ -452,41 +416,23 @@ public class DoctorDashboard extends JFrame {
                                 String insertQuery = "INSERT INTO old_patients (" +
                                                 "patient_id, full_name, age, gender, disease," +
                                                 "blood_pressure, weight, temperature, heart_rate," +
-                                                "notes, prescription, doctor_id)" +
-
+                                                "notes, doctor_id)" +
                                                 " SELECT patient_id, full_name, age, gender, disease," +
                                                 "blood_pressure, weight, temperature, heart_rate," +
-                                                "?, ?, doctor_id " +
-
+                                                "?, doctor_id " +
                                                 "FROM patients WHERE patient_id = ?";
 
                                 PreparedStatement insertPst = con.prepareStatement(insertQuery);
 
                                 // NOTES
                                 if (notesArea.getText().trim().isEmpty()) {
-
                                         insertPst.setNull(1, Types.NULL);
-
                                 } else {
-
-                                        insertPst.setString(
-                                                        1,
-                                                        notesArea.getText());
+                                        insertPst.setString(1, notesArea.getText());
                                 }
 
-                                // PRESCRIPTION
-                                // if(prescriptionArea.getText().trim().isEmpty()) {
-
-                                // insertPst.setNull(2, Types.NULL);
-
-                                // } else {
-
-                                // insertPst.setString(
-                                // 2,
-                                // prescriptionArea.getText());
-                                // }
-
-                                insertPst.setInt(3, currentPatientId);
+                                // CURRENT PATIENT ID
+                                insertPst.setInt(2, currentPatientId);
 
                                 insertPst.executeUpdate();
 
@@ -637,7 +583,8 @@ public class DoctorDashboard extends JFrame {
                         Connection con = DBconnection.getConnection();
 
                         String query = "SELECT * FROM patients " +
-                                        "WHERE status IN ('Ready','Pending') " +
+                                        "WHERE doctor_id = ? " +
+                                        "AND status IN ('Ready','Pending') " +
                                         "ORDER BY " +
                                         "CASE " +
                                         "WHEN status = 'Ready' THEN 1 " +
@@ -646,6 +593,8 @@ public class DoctorDashboard extends JFrame {
                                         "LIMIT 1";
 
                         PreparedStatement pst = con.prepareStatement(query);
+
+                        pst.setInt(1, doctorId);
 
                         ResultSet rs = pst.executeQuery();
 
@@ -729,7 +678,8 @@ public class DoctorDashboard extends JFrame {
                         Connection con = DBconnection.getConnection();
 
                         String query = "SELECT * FROM patients " +
-                                        "WHERE status IN ('Ready', 'Pending') " +
+                                        "WHERE doctor_id = ? " +
+                                        "AND status IN ('Ready', 'Pending') " +
                                         "ORDER BY " +
                                         "CASE " +
                                         "WHEN status = 'Ready' THEN 1 " +
@@ -738,6 +688,8 @@ public class DoctorDashboard extends JFrame {
                                         "LIMIT 3";
 
                         PreparedStatement pst = con.prepareStatement(query);
+
+                        pst.setInt(1, doctorId);
 
                         ResultSet rs = pst.executeQuery();
 
@@ -829,12 +781,9 @@ public class DoctorDashboard extends JFrame {
                 // delete button to remove the medicine from the combo box and also from the
                 // database
                 RoundedButton addMedicineBtn = new RoundedButton("Add Medicine");
-                addMedicineBtn.setBounds(30, 370, 170, 40);
+                addMedicineBtn.setBounds(30, 370, 130, 40);
                 addMedicineBtn.setBackground(primary);
                 addMedicineBtn.setForeground(Color.WHITE);
-
-                dialog.add(addMedicineBtn);
-                dialog.add(medicineScroll);
 
                 // add madicine button action listener to add the medicine from the text field
                 // to the combo box and also save it in the database with the current patient id
@@ -912,7 +861,7 @@ public class DoctorDashboard extends JFrame {
                 // sent to the pharmacy
                 RoundedButton sendBtn = new RoundedButton("Send to Pharmacy");
 
-                sendBtn.setBounds(420, 490, 210, 40);
+                sendBtn.setBounds(430, 370, 220, 40);
 
                 sendBtn.setBackground(primary);
                 sendBtn.setForeground(Color.WHITE);
@@ -961,25 +910,34 @@ public class DoctorDashboard extends JFrame {
                 // current patient id and also reduce the stock of the medicine in the database
                 // automatically when the prescription is sent to the pharmacy
                 sendBtn.addActionListener(e -> {
-
                         try {
-
                                 Connection con = DBconnection.getConnection();
 
+                                // Check if patient exists and is still in queue
+                                String checkQuery = "SELECT COUNT(*) FROM patients WHERE patient_id = ? AND status != 'Completed'";
+                                PreparedStatement checkPst = con.prepareStatement(checkQuery);
+                                checkPst.setInt(1, currentPatientId);
+                                ResultSet checkRs = checkPst.executeQuery();
+
+                                if (checkRs.next() && checkRs.getInt(1) == 0) {
+                                        // No active patient found
+                                        JOptionPane.showMessageDialog(
+                                                        dialog,
+                                                        "No active patient in queue. Prescription cannot be sent!");
+                                        return; // stop here
+                                }
+
+                                // If patient exists, proceed with prescription insert
                                 Component[] components = medicineListPanel.getComponents();
 
                                 for (Component comp : components) {
-
                                         JPanel row = (JPanel) comp;
 
                                         RoundedComboBox<String> medBox = (RoundedComboBox<String>) row.getComponent(0);
-
                                         RoundedTextField dosage = (RoundedTextField) row.getComponent(1);
-
                                         RoundedTextField frequency = (RoundedTextField) row.getComponent(2);
 
                                         String medicine = medBox.getSelectedItem().toString();
-
                                         medicine = medicine.split("\\(")[0].trim();
 
                                         // INSERT PRESCRIPTION
@@ -989,55 +947,35 @@ public class DoctorDashboard extends JFrame {
                                                         "VALUES (?, ?, ?, ?, ?, ?)";
 
                                         PreparedStatement pst = con.prepareStatement(query);
-
                                         pst.setInt(1, currentPatientId);
-
                                         pst.setString(2, medicine);
-
-                                        pst.setString(3,
-                                                        dosage.getText());
-
-                                        pst.setString(4,
-                                                        frequency.getText());
-
-                                        pst.setInt(5, 1);
-
-                                        pst.setString(6,
-                                                        "Pending");
-
+                                        pst.setString(3, dosage.getText());
+                                        pst.setString(4, frequency.getText());
+                                        pst.setInt(5, 1); // doctor id
+                                        pst.setString(6, "Pending");
                                         pst.executeUpdate();
 
                                         // AUTO STOCK REDUCE
-                                        String stockQuery = "UPDATE medicines " +
-                                                        "SET stock = stock - 1 " +
-                                                        "WHERE medicine_name = ?";
-
+                                        String stockQuery = "UPDATE medicines SET stock = stock - 1 WHERE medicine_name = ?";
                                         PreparedStatement stockPst = con.prepareStatement(stockQuery);
-
                                         stockPst.setString(1, medicine);
-
                                         stockPst.executeUpdate();
                                 }
 
-                                JOptionPane.showMessageDialog(
-                                                dialog,
-                                                "Prescription Sent!");
-
+                                JOptionPane.showMessageDialog(dialog, "Prescription Sent!");
                                 dialog.dispose();
 
                         } catch (Exception ex) {
-
                                 ex.printStackTrace();
                         }
                 });
 
                 dialog.add(title);
-
                 dialog.add(medicineField);
-
                 dialog.add(medicineBox);
-
                 dialog.add(sendBtn);
+                dialog.add(addMedicineBtn);
+                dialog.add(medicineScroll);
 
                 dialog.setVisible(true);
         }
