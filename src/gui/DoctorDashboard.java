@@ -120,6 +120,9 @@ public class DoctorDashboard extends JFrame {
                                 new LoginUI();
                                 dispose();
                         }
+                        else {
+                                setActiveButton(dashboardBtn);
+                        }
                 });
 
                 // =========================
@@ -585,6 +588,7 @@ public class DoctorDashboard extends JFrame {
                         String query = "SELECT * FROM patients " +
                                         "WHERE doctor_id = ? " +
                                         "AND status IN ('Ready','Pending') " +
+                                        "AND nurse_status = 'Completed' " +
                                         "ORDER BY " +
                                         "CASE " +
                                         "WHEN status = 'Ready' THEN 1 " +
@@ -679,6 +683,7 @@ public class DoctorDashboard extends JFrame {
 
                         String query = "SELECT * FROM patients " +
                                         "WHERE doctor_id = ? " +
+                                        "AND nurse_status = 'Completed' " +
                                         "AND status IN ('Ready', 'Pending') " +
                                         "ORDER BY " +
                                         "CASE " +
@@ -940,11 +945,31 @@ public class DoctorDashboard extends JFrame {
                                         String medicine = medBox.getSelectedItem().toString();
                                         medicine = medicine.split("\\(")[0].trim();
 
+                                        // =====================================
+                                        // GET MEDICINE TYPE FROM DATABASE
+                                        // =====================================
+
+                                        String typeQuery = "SELECT medicine_type FROM medicines " +
+                                                        "WHERE medicine_name = ?";
+
+                                        PreparedStatement typePst = con.prepareStatement(typeQuery);
+
+                                        typePst.setString(1, medicine);
+
+                                        ResultSet typeRs = typePst.executeQuery();
+
+                                        String medicineType = "";
+
+                                        if (typeRs.next()) {
+
+                                                medicineType = typeRs.getString("medicine_type");
+                                        }
+
                                         // INSERT PRESCRIPTION
                                         String query = "INSERT INTO prescriptions " +
-                                                        "(patient_id, medicine_name, dosage, frequency, prescribed_by, status) "
+                                                        "(patient_id, medicine_name, dosage, frequency, prescribed_by,medicine_type,nurse_status,status) "
                                                         +
-                                                        "VALUES (?, ?, ?, ?, ?, ?)";
+                                                        "VALUES (?, ?, ?, ?, ?, ?, ?, ?)";
 
                                         PreparedStatement pst = con.prepareStatement(query);
                                         pst.setInt(1, currentPatientId);
@@ -952,7 +977,16 @@ public class DoctorDashboard extends JFrame {
                                         pst.setString(3, dosage.getText());
                                         pst.setString(4, frequency.getText());
                                         pst.setInt(5, 1); // doctor id
-                                        pst.setString(6, "Pending");
+                                        pst.setString(8, "Pending");
+                                        pst.setString(6, medicineType);
+                                        if (medicineType.equalsIgnoreCase("Injection")) {
+
+                                                pst.setString(7, "Pending");
+
+                                        } else {
+
+                                                pst.setString(7, "Not Required");
+                                        }
                                         pst.executeUpdate();
 
                                         // AUTO STOCK REDUCE

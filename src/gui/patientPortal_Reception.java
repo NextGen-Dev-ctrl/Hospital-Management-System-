@@ -10,6 +10,7 @@ import java.sql.*;
 
 public class patientPortal_Reception extends JFrame {
 
+    private JButton appointmentsBtn,patientsBtn,logoutBtn;
     private JTable patientTable;
     private DefaultTableModel model;
 
@@ -45,28 +46,28 @@ public class patientPortal_Reception extends JFrame {
         logo.setForeground(Color.WHITE);
         logo.setFont(new Font("Segoe UI", Font.BOLD, 24));
 
-        JButton appointmentsBtn = createSidebarButton("Appointments");
+        this.appointmentsBtn = createSidebarButton("Appointments");
 
-        appointmentsBtn.setBounds(0, 140, 220, 45);
+        this.appointmentsBtn.setBounds(0, 140, 220, 45);
 
-        appointmentsBtn.addActionListener(e -> {
-
+        this.appointmentsBtn.addActionListener(e -> {
+            setActiveButton(appointmentsBtn);
             new ReceptionistDashboard(this.receptionistId, this.receptionistNameText);
             dispose();
         });
 
-        JButton patientsBtn = createSidebarButton("Patients");
+        this.patientsBtn = createSidebarButton("Patients");
 
-        patientsBtn.setBounds(0, 200, 220, 45);
+        this.patientsBtn.setBounds(0, 200, 220, 45);
 
-        JButton logoutBtn = createSidebarButton("Logout");
+        this.logoutBtn = createSidebarButton("Logout");
 
-        logoutBtn.setBounds(0, 580, 220, 45);
+        this.logoutBtn.setBounds(0, 580, 220, 45);
 
-        logoutBtn.addActionListener(e -> {
-
-            logoutBtn.setBackground(Color.WHITE);
-            logoutBtn.setForeground(primary);
+        this.logoutBtn.addActionListener(e -> {
+            setActiveButton(logoutBtn);
+            this.logoutBtn.setBackground(Color.WHITE);
+            this.logoutBtn.setForeground(primary);
             int confirm = JOptionPane.showConfirmDialog(
                     null,
                     "Are you sure you want to logout?",
@@ -76,15 +77,17 @@ public class patientPortal_Reception extends JFrame {
                 new LoginUI();
                 dispose();
             }
+            else {
+                setActiveButton(appointmentsBtn);
+            }
         });
         // ACTIVE BUTTON
-        patientsBtn.setBackground(Color.WHITE);
-        patientsBtn.setForeground(primary);
+        setActiveButton(patientsBtn);
 
         sideBar.add(logo);
-        sideBar.add(appointmentsBtn);
-        sideBar.add(patientsBtn);
-        sideBar.add(logoutBtn);
+        sideBar.add(this.appointmentsBtn);
+        sideBar.add(this.patientsBtn);
+        sideBar.add(this.logoutBtn);
 
         // =========================
         // MAIN PANEL
@@ -286,12 +289,15 @@ public class patientPortal_Reception extends JFrame {
         try {
 
             Connection con = DBconnection.getConnection();
-
-            String query = "SELECT old_patients.*, doctors.full_name AS doctor_name " +
-                    "FROM old_patients " +
-                    "LEFT JOIN doctors " +
-                    "ON old_patients.doctor_id = doctors.doctor_id " +
-                    "ORDER BY completed_at DESC";
+            // String query = "SELECT prescriptions.*, patients.full_name " +
+            // "FROM prescriptions " +
+            // "JOIN patients " +
+            // "ON prescriptions.patient_id = patients.patient_id " +
+            // "WHERE prescriptions.medicine_type = 'Injection' " +
+            // "AND prescriptions.nurse_status = 'Pending'";
+            String query = "SELECT * FROM prescriptions " +
+                    "WHERE medicine_type = 'Injection' " +
+                    "AND nurse_status = 'Pending'";
 
             PreparedStatement pst = con.prepareStatement(query);
 
@@ -583,4 +589,19 @@ public class patientPortal_Reception extends JFrame {
 
         return btn;
     }
+            private void setActiveButton(JButton activeBtn) {
+
+                JButton[] buttons = { appointmentsBtn,patientsBtn,logoutBtn };
+
+                for (JButton btn : buttons) {
+
+                        // NORMAL BUTTON
+                        btn.setBackground(Color.decode("#008B86"));
+                        btn.setForeground(Color.WHITE);
+                }
+
+                // ACTIVE BUTTON
+                activeBtn.setBackground(Color.WHITE);
+                activeBtn.setForeground(Color.decode("#00A19B"));
+        }
 }

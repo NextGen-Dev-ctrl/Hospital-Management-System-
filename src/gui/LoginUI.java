@@ -87,7 +87,7 @@ public class LoginUI extends JFrame {
         roleLabel.setFont(new Font("Segoe UI", Font.BOLD, 14));
         roleLabel.setForeground(fgColor);
 
-        String[] roles = { "Admin", "Doctor", "Receptionist" };
+        String[] roles = { "Admin", "Doctor", "Receptionist", "Nurse" };
         RoundedComboBox<String> roleBox = new RoundedComboBox<>(roles);
         roleBox.setBounds(150, 300, 200, 40);
         roleBox.setFont(new Font("Segoe UI", Font.BOLD, 12));
@@ -197,7 +197,32 @@ public class LoginUI extends JFrame {
 
                             dispose();
                         }
+                        // Nurse login
+                        else if(role.equals("Nurse"))
+                        {
+                            String nurseQuery = "SELECT * FROM nurses " +
+                                    "WHERE username=? AND password=?";
 
+                            PreparedStatement nursePst = con.prepareStatement(nurseQuery);
+
+                            nursePst.setString(1, user);
+                            nursePst.setString(2, pass);
+
+                            ResultSet nurseRs = nursePst.executeQuery();
+
+                            if (nurseRs.next()) {
+
+                                int nurseId = nurseRs.getInt("nurse_id");
+
+                                String nurseName = nurseRs.getString("full_name");
+
+                                new NurseDashboard(
+                                        nurseId,
+                                        nurseName);
+
+                                dispose();
+                            }
+                        }
                         // OTHER ROLES
                         else {
 

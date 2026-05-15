@@ -10,6 +10,7 @@ import java.sql.*;
 
 public class ReceptionistDashboard extends JFrame {
 
+        private JButton appointmentsBtn,patientsBtn,logoutBtn;
         private JTable appointmentTable;
         private DefaultTableModel model;
 
@@ -43,28 +44,28 @@ public class ReceptionistDashboard extends JFrame {
                 logo.setForeground(Color.WHITE);
                 logo.setFont(new Font("Segoe UI", Font.BOLD, 24));
 
-                JButton appointmentsBtn = createSidebarButton("Appointments");
+                this.appointmentsBtn = createSidebarButton("Appointments");
 
-                appointmentsBtn.setBounds(0, 140, 220, 45);
+                this.appointmentsBtn.setBounds(0, 140, 220, 45);
 
-                JButton patientsBtn = createSidebarButton("Patients");
+                this.patientsBtn = createSidebarButton("Patients");
 
-                patientsBtn.setBounds(0, 200, 220, 45);
+                this.patientsBtn.setBounds(0, 200, 220, 45);
 
-                patientsBtn.addActionListener(e -> {
-
+                this.patientsBtn.addActionListener(e -> {
+                        setActiveButton(patientsBtn);
                         new patientPortal_Reception(this.receptionistId, this.receptionistNameText);
                         dispose();
                 });
 
-                JButton logoutBtn = createSidebarButton("Logout");
+                this.logoutBtn = createSidebarButton("Logout");
 
                 logoutBtn.setBounds(0, 580, 220, 45);
 
-                logoutBtn.addActionListener(e -> {
-
-                        logoutBtn.setBackground(Color.WHITE);
-                        logoutBtn.setForeground(primary);
+                this.logoutBtn.addActionListener(e -> {
+                        setActiveButton(logoutBtn);
+                        this.logoutBtn.setBackground(Color.WHITE);
+                        this.logoutBtn.setForeground(primary);
                         int confirm = JOptionPane.showConfirmDialog(
                                         null,
                                         "Are you sure you want to logout?",
@@ -74,16 +75,18 @@ public class ReceptionistDashboard extends JFrame {
                                 new LoginUI();
                                 dispose();
                         }
+                        else {
+                                setActiveButton(appointmentsBtn);
+                        }
                 });
 
                 // ACTIVE
-                appointmentsBtn.setBackground(Color.WHITE);
-                appointmentsBtn.setForeground(primary);
+                setActiveButton(appointmentsBtn);
 
                 sideBar.add(logo);
-                sideBar.add(appointmentsBtn);
-                sideBar.add(patientsBtn);
-                sideBar.add(logoutBtn);
+                sideBar.add(this.appointmentsBtn);
+                sideBar.add(this.patientsBtn);
+                sideBar.add(this.logoutBtn);
 
                 // MAIN PANEL
                 JPanel mainPanel = new JPanel();
@@ -99,7 +102,7 @@ public class ReceptionistDashboard extends JFrame {
                 JLabel dashboardTitle = new JLabel("Receptionist Dashboard");
                 dashboardTitle.setBounds(30, 25, 250, 30);
                 dashboardTitle.setFont(new Font("Segoe UI", Font.BOLD, 18));
-                dashboardTitle.setForeground(new Color(40,40,40));
+                dashboardTitle.setForeground(new Color(40, 40, 40));
 
                 this.receptionistId = receptionistId;
                 this.receptionistNameText = receptionistNameText;
@@ -128,7 +131,7 @@ public class ReceptionistDashboard extends JFrame {
                 JLabel subtitle = new JLabel("Manage your appointments electronically and efficiently.");
                 subtitle.setBounds(40, 150, 400, 25);
                 subtitle.setFont(new Font("Segoe UI", Font.PLAIN, 14));
-                subtitle.setForeground(new Color(40,40,40));
+                subtitle.setForeground(new Color(40, 40, 40));
                 // SEARCH
                 searchField = new RoundedTextField(20);
 
@@ -738,8 +741,8 @@ public class ReceptionistDashboard extends JFrame {
                                 String insertQuery = "INSERT INTO patients(" +
                                                 "full_name, age, gender, disease," +
                                                 "doctor_id, appointment_date," +
-                                                "appointment_time, status)" +
-                                                "VALUES(?,?,?,?,?,?,?,?)";
+                                                "appointment_time, status,nurse_status)" +
+                                                "VALUES(?,?,?,?,?,?,?,?,?)";
 
                                 PreparedStatement pst = con.prepareStatement(insertQuery);
 
@@ -767,6 +770,8 @@ public class ReceptionistDashboard extends JFrame {
 
                                 pst.setString(8,
                                                 "Pending");
+
+                                pst.setString(9, "Pending");
 
                                 pst.executeUpdate();
 
@@ -806,5 +811,21 @@ public class ReceptionistDashboard extends JFrame {
                                 new Font("Segoe UI", Font.BOLD, 15));
 
                 return btn;
+        }
+
+        private void setActiveButton(JButton activeBtn) {
+
+                JButton[] buttons = { appointmentsBtn,patientsBtn,logoutBtn };
+
+                for (JButton btn : buttons) {
+
+                        // NORMAL BUTTON
+                        btn.setBackground(Color.decode("#008B86"));
+                        btn.setForeground(Color.WHITE);
+                }
+
+                // ACTIVE BUTTON
+                activeBtn.setBackground(Color.WHITE);
+                activeBtn.setForeground(Color.decode("#00A19B"));
         }
 }

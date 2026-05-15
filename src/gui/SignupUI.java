@@ -87,7 +87,7 @@ public class SignupUI extends JFrame
         roleLabel.setFont(new Font("Segoe UI",Font.BOLD,14));
         roleLabel.setForeground(fgColor);    
 
-        String[] roles = {"Admin", "Doctor", "Receptionist"};
+        String[] roles = {"Admin", "Doctor", "Receptionist", "Nurse"};
         RoundedComboBox<String> roleBox = new RoundedComboBox<>(roles);
         roleBox.setBounds(150, 130, 220, 40);
         roleBox.setFont(new Font("Segoe UI",Font.BOLD,12));
