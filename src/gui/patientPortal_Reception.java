@@ -10,588 +10,591 @@ import java.sql.*;
 
 public class patientPortal_Reception extends JFrame {
 
-    private JButton appointmentsBtn,patientsBtn,logoutBtn;
-    private JTable patientTable;
-    private DefaultTableModel model;
-
-    private JTextField searchField;
-
-    private Color bgColor = Color.decode("#F2EFE7");
-    private Color primary = Color.decode("#00A19B");
-
-    private int receptionistId;
-    private String receptionistNameText;
-
-    public patientPortal_Reception(int receptionistId, String receptionistNameText) {
-
-        // =========================
-        // FRAME
-        // =========================
-        setTitle("Receptionist Portal");
-        setSize(1400, 800);
-        setLocationRelativeTo(null);
-        setDefaultCloseOperation(EXIT_ON_CLOSE);
-        setLayout(new BorderLayout());
-
-        // =========================
-        // SIDEBAR
-        // =========================
-        JPanel sideBar = new JPanel();
-        sideBar.setPreferredSize(new Dimension(220, 0));
-        sideBar.setBackground(primary);
-        sideBar.setLayout(null);
-
-        JLabel logo = new JLabel("MediSync HMS");
-        logo.setBounds(20, 40, 200, 40);
-        logo.setForeground(Color.WHITE);
-        logo.setFont(new Font("Segoe UI", Font.BOLD, 24));
-
-        this.appointmentsBtn = createSidebarButton("Appointments");
-
-        this.appointmentsBtn.setBounds(0, 140, 220, 45);
-
-        this.appointmentsBtn.addActionListener(e -> {
-            setActiveButton(appointmentsBtn);
-            new ReceptionistDashboard(this.receptionistId, this.receptionistNameText);
-            dispose();
-        });
-
-        this.patientsBtn = createSidebarButton("Patients");
-
-        this.patientsBtn.setBounds(0, 200, 220, 45);
-
-        this.logoutBtn = createSidebarButton("Logout");
-
-        this.logoutBtn.setBounds(0, 580, 220, 45);
-
-        this.logoutBtn.addActionListener(e -> {
-            setActiveButton(logoutBtn);
-            this.logoutBtn.setBackground(Color.WHITE);
-            this.logoutBtn.setForeground(primary);
-            int confirm = JOptionPane.showConfirmDialog(
-                    null,
-                    "Are you sure you want to logout?",
-                    "Logout Confirmation",
-                    JOptionPane.YES_NO_OPTION);
-            if (confirm == JOptionPane.YES_OPTION) {
-                new LoginUI();
-                dispose();
-            }
-            else {
-                setActiveButton(appointmentsBtn);
-            }
-        });
-        // ACTIVE BUTTON
-        setActiveButton(patientsBtn);
-
-        sideBar.add(logo);
-        sideBar.add(this.appointmentsBtn);
-        sideBar.add(this.patientsBtn);
-        sideBar.add(this.logoutBtn);
-
-        // =========================
-        // MAIN PANEL
-        // =========================
-        JPanel mainPanel = new JPanel();
-        mainPanel.setBackground(bgColor);
-        mainPanel.setLayout(null);
-
-        // =========================
-        // TOP BAR
-        // =========================
-        this.receptionistId = receptionistId;
-        this.receptionistNameText = receptionistNameText;
-
-        JPanel topBar = new JPanel();
-        topBar.setBounds(0, 0, 1180, 80);
-        topBar.setBackground(Color.WHITE);
-        topBar.setLayout(null);
-
-        JLabel dashboardTitle = new JLabel("Receptionist Dashboard");
-        dashboardTitle.setBounds(30, 25, 250, 30);
-        dashboardTitle.setFont(new Font("Segoe UI", Font.BOLD, 18));
-        dashboardTitle.setForeground(new Color(40, 40, 40));
-
-        JLabel receptionistName = new JLabel(
-                "<html>" + this.receptionistNameText + "<br>Receptionist ID: " + this.receptionistId + "</html>");
-        receptionistName.setBounds(780, 15, 250, 40);
-        receptionistName.setFont(new Font("Segoe UI", Font.BOLD, 16));
-        receptionistName.setForeground(primary);
-
-        ImageIcon icon = new ImageIcon(
-                new ImageIcon("images/profile_image.png").getImage().getScaledInstance(50, 50, Image.SCALE_SMOOTH));
-        receptionistName.setIcon(icon);
-
-        // ✅ Move icon to the right side
-        receptionistName.setHorizontalTextPosition(SwingConstants.LEFT);
-        receptionistName.setHorizontalAlignment(SwingConstants.RIGHT);
-        topBar.add(receptionistName);
-        topBar.add(dashboardTitle);
-
-        // =========================
-        // TITLE
-        // =========================
-        JLabel title = new JLabel("Patient Directory");
-
-        title.setBounds(40, 110, 400, 40);
-
-        title.setFont(
-                new Font("Segoe UI", Font.BOLD, 28));
-
-        title.setForeground(primary);
-
-        JLabel subtitle = new JLabel("Search and manage electronic health records");
-
-        subtitle.setBounds(40, 145, 400, 25);
-
-        subtitle.setFont(new Font("Segoe UI", Font.PLAIN, 14));
-
-        subtitle.setForeground(new Color(40, 40, 40));
-
-        // =========================
-        // SEARCH FIELD
-        // =========================
-        searchField = new RoundedTextField(20);
-
-        searchField.setBounds(40, 200, 700, 40);
-
-        searchField.setFont(new Font("Segoe UI", Font.PLAIN, 15));
-
-        searchField.setBorder(BorderFactory.createEmptyBorder(5, 15, 5, 15));
-
-        ((RoundedTextField) searchField).setHint("Search by patient name...");
-
-        // =========================
-        // SEARCH DOCTOR BUTTON
-        // =========================
-        RoundedButton searchDoctorBtn = new RoundedButton("Search Available Doctors");
-        searchDoctorBtn.setBounds(790, 200, 220, 40);
-        searchDoctorBtn.setBackground(primary);
-        searchDoctorBtn.setForeground(Color.WHITE);
-
-        searchDoctorBtn.addActionListener(e -> {
-
-            openDoctorAvailabilityDialog();
-        });
-
-        // =========================
-        // TABLE
-        // =========================
-        String[] columns = {
-
-                "ID",
-
-                "Full Name",
-
-                "Age",
-
-                "Gender",
-
-                "Disease",
-
-                "Doctor",
-
-                "Completed At"
-        };
-
-        model = new DefaultTableModel(columns, 0);
-
-        patientTable = new JTable(model);
-
-        patientTable.setRowHeight(35);
-
-        patientTable.setFont(new Font("Segoe UI", Font.PLAIN, 14));
-
-        patientTable.getTableHeader().setFont(new Font("Segoe UI", Font.BOLD, 14));
-
-        patientTable.getTableHeader().setPreferredSize(new Dimension(100, 50));
-
-        patientTable.getTableHeader().setBackground(primary);
-
-        patientTable.getTableHeader().setForeground(Color.WHITE);
-
-        JScrollPane scrollPane = new JScrollPane(patientTable);
-
-        scrollPane.setBounds(40, 270, 990, 350);
-
-        patientTable.getColumnModel().getColumn(0).setPreferredWidth(40); // ID
-
-        patientTable.getColumnModel().getColumn(1).setPreferredWidth(220); // Full Name
-
-        patientTable.getColumnModel().getColumn(2).setPreferredWidth(70); // Age
-
-        patientTable.getColumnModel().getColumn(3).setPreferredWidth(70); // Gender
-
-        patientTable.getColumnModel().getColumn(4).setPreferredWidth(190); // Disease
-
-        patientTable.getColumnModel().getColumn(5).setPreferredWidth(200); // Doctor
-
-        patientTable.getColumnModel().getColumn(6).setPreferredWidth(180); // Completed At
-
-        patientTable.setAutoResizeMode(JTable.AUTO_RESIZE_OFF);
-
-        DefaultTableCellRenderer center = new DefaultTableCellRenderer();
-
-        center.setHorizontalAlignment(JLabel.CENTER);
-
-        patientTable.getColumnModel().getColumn(0).setCellRenderer(center);
-
-        patientTable.getColumnModel().getColumn(2).setCellRenderer(center);
-
-        patientTable.getColumnModel().getColumn(3).setCellRenderer(center);
-
-        patientTable.getColumnModel().getColumn(6).setCellRenderer(center);
-
-        // =========================
-        // ADD COMPONENTS
-        // =========================
-        mainPanel.add(topBar);
-
-        mainPanel.add(title);
-        mainPanel.add(subtitle);
-
-        mainPanel.add(searchField);
-
-        mainPanel.add(searchDoctorBtn);
-
-        mainPanel.add(scrollPane);
-
-        add(sideBar, BorderLayout.WEST);
-        add(mainPanel, BorderLayout.CENTER);
-
-        // =========================
-        // LOAD DATA
-        // =========================
-        loadPatients();
-
-        // =========================
-        // SEARCH LOGIC
-        // =========================
-        searchField.addKeyListener(
-                new java.awt.event.KeyAdapter() {
-
-                    public void keyReleased(
-                            java.awt.event.KeyEvent e) {
-
-                        searchPatients(
-                                searchField.getText());
-                    }
+        private JButton appointmentsBtn, patientsBtn, logoutBtn;
+        private JTable patientTable;
+        private DefaultTableModel model;
+
+        private JTextField searchField;
+
+        private Color bgColor = Color.decode("#F2EFE7");
+        private Color primary = Color.decode("#00A19B");
+
+        private int receptionistId;
+        private String receptionistNameText;
+
+        public patientPortal_Reception(int receptionistId, String receptionistNameText) {
+
+                // =========================
+                // FRAME
+                // =========================
+                setTitle("Receptionist Portal");
+                setSize(1400, 800);
+                setLocationRelativeTo(null);
+                setDefaultCloseOperation(EXIT_ON_CLOSE);
+                setLayout(new BorderLayout());
+
+                // =========================
+                // SIDEBAR
+                // =========================
+                JPanel sideBar = new JPanel();
+                sideBar.setPreferredSize(new Dimension(220, 0));
+                sideBar.setBackground(primary);
+                sideBar.setLayout(null);
+
+                JLabel logo = new JLabel("MediSync HMS");
+                logo.setBounds(20, 40, 200, 40);
+                logo.setForeground(Color.WHITE);
+                logo.setFont(new Font("Segoe UI", Font.BOLD, 24));
+
+                this.appointmentsBtn = createSidebarButton("Appointments");
+
+                this.appointmentsBtn.setBounds(0, 140, 220, 45);
+
+                this.appointmentsBtn.addActionListener(e -> {
+                        setActiveButton(appointmentsBtn);
+                        new ReceptionistDashboard(this.receptionistId, this.receptionistNameText);
+                        dispose();
                 });
 
-        setVisible(true);
-    }
+                this.patientsBtn = createSidebarButton("Patients");
 
-    // ====================================
-    // LOAD PATIENTS
-    // ====================================
-    private void loadPatients() {
+                this.patientsBtn.setBounds(0, 200, 220, 45);
 
-        try {
+                this.logoutBtn = createSidebarButton("Logout");
 
-            Connection con = DBconnection.getConnection();
-            // String query = "SELECT prescriptions.*, patients.full_name " +
-            // "FROM prescriptions " +
-            // "JOIN patients " +
-            // "ON prescriptions.patient_id = patients.patient_id " +
-            // "WHERE prescriptions.medicine_type = 'Injection' " +
-            // "AND prescriptions.nurse_status = 'Pending'";
-            String query = "SELECT * FROM prescriptions " +
-                    "WHERE medicine_type = 'Injection' " +
-                    "AND nurse_status = 'Pending'";
+                this.logoutBtn.setBounds(0, 580, 220, 45);
 
-            PreparedStatement pst = con.prepareStatement(query);
-
-            ResultSet rs = pst.executeQuery();
-
-            model.setRowCount(0);
-
-            while (rs.next()) {
-
-                model.addRow(new Object[] {
-
-                        rs.getInt("patient_id"),
-
-                        rs.getString("full_name"),
-
-                        rs.getInt("age"),
-
-                        rs.getString("gender"),
-
-                        rs.getString("disease"),
-
-                        rs.getString("doctor_name"),
-
-                        rs.getTimestamp("completed_at")
+                this.logoutBtn.addActionListener(e -> {
+                        setActiveButton(logoutBtn);
+                        this.logoutBtn.setBackground(Color.WHITE);
+                        this.logoutBtn.setForeground(primary);
+                        int confirm = JOptionPane.showConfirmDialog(
+                                        null,
+                                        "Are you sure you want to logout?",
+                                        "Logout Confirmation",
+                                        JOptionPane.YES_NO_OPTION);
+                        if (confirm == JOptionPane.YES_OPTION) {
+                                new LoginUI();
+                                dispose();
+                        } else {
+                                setActiveButton(appointmentsBtn);
+                        }
                 });
-            }
+                // ACTIVE BUTTON
+                setActiveButton(patientsBtn);
 
-        } catch (Exception ex) {
+                sideBar.add(logo);
+                sideBar.add(this.appointmentsBtn);
+                sideBar.add(this.patientsBtn);
+                sideBar.add(this.logoutBtn);
 
-            ex.printStackTrace();
-        }
-    }
+                // =========================
+                // MAIN PANEL
+                // =========================
+                JPanel mainPanel = new JPanel();
+                mainPanel.setBackground(bgColor);
+                mainPanel.setLayout(null);
 
-    // ====================================
-    // SEARCH PATIENTS
-    // ====================================
-    private void searchPatients(String keyword) {
+                // =========================
+                // TOP BAR
+                // =========================
+                this.receptionistId = receptionistId;
+                this.receptionistNameText = receptionistNameText;
 
-        try {
+                JPanel topBar = new JPanel();
+                topBar.setBounds(0, 0, 1180, 80);
+                topBar.setBackground(Color.WHITE);
+                topBar.setLayout(null);
 
-            Connection con = DBconnection.getConnection();
+                JLabel dashboardTitle = new JLabel("Receptionist Dashboard");
+                dashboardTitle.setBounds(30, 25, 250, 30);
+                dashboardTitle.setFont(new Font("Segoe UI", Font.BOLD, 18));
+                dashboardTitle.setForeground(new Color(40, 40, 40));
 
-            String query = "SELECT old_patients.*, doctors.full_name AS doctor_name " +
-                    "FROM old_patients " +
-                    "LEFT JOIN doctors " +
-                    "ON old_patients.doctor_id = doctors.doctor_id " +
-                    "WHERE old_patients.full_name LIKE ?";
+                JLabel receptionistName = new JLabel(
+                                "<html>" + this.receptionistNameText + "<br>Receptionist ID: " + this.receptionistId
+                                                + "</html>");
+                receptionistName.setBounds(780, 15, 250, 40);
+                receptionistName.setFont(new Font("Segoe UI", Font.BOLD, 16));
+                receptionistName.setForeground(primary);
 
-            PreparedStatement pst = con.prepareStatement(query);
+                ImageIcon icon = new ImageIcon(
+                                new ImageIcon("images/profile_image.png").getImage().getScaledInstance(50, 50,
+                                                Image.SCALE_SMOOTH));
+                receptionistName.setIcon(icon);
 
-            pst.setString(
-                    1,
-                    "%" + keyword + "%");
+                // ✅ Move icon to the right side
+                receptionistName.setHorizontalTextPosition(SwingConstants.LEFT);
+                receptionistName.setHorizontalAlignment(SwingConstants.RIGHT);
+                topBar.add(receptionistName);
+                topBar.add(dashboardTitle);
 
-            ResultSet rs = pst.executeQuery();
+                // =========================
+                // TITLE
+                // =========================
+                JLabel title = new JLabel("Patient Directory");
 
-            model.setRowCount(0);
+                title.setBounds(40, 110, 400, 40);
 
-            while (rs.next()) {
+                title.setFont(
+                                new Font("Segoe UI", Font.BOLD, 28));
 
-                model.addRow(new Object[] {
+                title.setForeground(primary);
 
-                        rs.getInt("patient_id"),
+                JLabel subtitle = new JLabel("Search and manage electronic health records");
 
-                        rs.getString("full_name"),
+                subtitle.setBounds(40, 145, 400, 25);
 
-                        rs.getInt("age"),
+                subtitle.setFont(new Font("Segoe UI", Font.PLAIN, 14));
 
-                        rs.getString("gender"),
+                subtitle.setForeground(new Color(40, 40, 40));
 
-                        rs.getString("disease"),
+                // =========================
+                // SEARCH FIELD
+                // =========================
+                searchField = new RoundedTextField(20);
 
-                        rs.getString("doctor_name"),
+                searchField.setBounds(40, 200, 700, 40);
 
-                        rs.getTimestamp("completed_at")
+                searchField.setFont(new Font("Segoe UI", Font.PLAIN, 15));
+
+                searchField.setBorder(BorderFactory.createEmptyBorder(5, 15, 5, 15));
+
+                ((RoundedTextField) searchField).setHint("Search by patient name...");
+
+                // =========================
+                // SEARCH DOCTOR BUTTON
+                // =========================
+                RoundedButton searchDoctorBtn = new RoundedButton("Search Available Doctors");
+                searchDoctorBtn.setBounds(790, 200, 220, 40);
+                searchDoctorBtn.setBackground(primary);
+                searchDoctorBtn.setForeground(Color.WHITE);
+
+                searchDoctorBtn.addActionListener(e -> {
+
+                        openDoctorAvailabilityDialog();
                 });
-            }
 
-        } catch (Exception ex) {
+                // =========================
+                // TABLE
+                // =========================
+                String[] columns = {
 
-            ex.printStackTrace();
-        }
-    }
+                                "ID",
 
-    // check the doctor availabilty at the current time
-    private void openDoctorAvailabilityDialog() {
+                                "Full Name",
 
-        JDialog dialog = new JDialog(this,
-                "Available Doctors",
-                true);
+                                "Age",
 
-        dialog.setSize(700, 500);
+                                "Gender",
 
-        dialog.setLocationRelativeTo(this);
+                                "Disease",
 
-        dialog.setLayout(null);
+                                "Doctor",
 
-        dialog.setBackground(bgColor);
+                                "Completed At"
+                };
 
-        // SEARCH FIELD
-        RoundedTextField searchDoctorField = new RoundedTextField(20);
+                model = new DefaultTableModel(columns, 0);
 
-        searchDoctorField.setBounds(
-                30,
-                20,
-                620,
-                40);
+                patientTable = new JTable(model);
 
-        searchDoctorField.setFont(
-                new Font("Segoe UI",
-                        Font.PLAIN,
-                        15));
+                patientTable.setRowHeight(35);
 
-        // TABLE
-        String[] columns = {
+                patientTable.setFont(new Font("Segoe UI", Font.PLAIN, 14));
 
-                "ID",
-                "Doctor Name",
-                "Specialization",
-                "Available From",
-                "Available To",
-                "Fee"
-        };
+                patientTable.getTableHeader().setFont(new Font("Segoe UI", Font.BOLD, 14));
 
-        DefaultTableModel doctorModel = new DefaultTableModel(columns, 0);
+                patientTable.getTableHeader().setPreferredSize(new Dimension(100, 50));
 
-        JTable doctorTable = new JTable(doctorModel);
+                patientTable.getTableHeader().setBackground(primary);
 
-        doctorTable.getTableHeader().setFont(
-                new Font("Segoe UI", Font.BOLD, 14));
+                patientTable.getTableHeader().setForeground(Color.WHITE);
 
-        doctorTable.getTableHeader().setPreferredSize(new Dimension(100, 50));
+                JScrollPane scrollPane = new JScrollPane(patientTable);
 
-        doctorTable.getTableHeader().setBackground(primary);
+                scrollPane.setBounds(40, 270, 990, 350);
 
-        doctorTable.getTableHeader().setForeground(Color.WHITE);
+                patientTable.getColumnModel().getColumn(0).setPreferredWidth(40); // ID
 
-        doctorTable.setRowHeight(35);
-        doctorTable.setFont(new Font("Segoe UI", Font.PLAIN, 12));
+                patientTable.getColumnModel().getColumn(1).setPreferredWidth(220); // Full Name
 
-        JScrollPane scrollPane = new JScrollPane(doctorTable);
+                patientTable.getColumnModel().getColumn(2).setPreferredWidth(70); // Age
 
-        doctorTable.getColumnModel().getColumn(0).setPreferredWidth(50);
+                patientTable.getColumnModel().getColumn(3).setPreferredWidth(70); // Gender
 
-        doctorTable.getColumnModel().getColumn(1).setPreferredWidth(166);
+                patientTable.getColumnModel().getColumn(4).setPreferredWidth(190); // Disease
 
-        doctorTable.getColumnModel().getColumn(2).setPreferredWidth(120);
+                patientTable.getColumnModel().getColumn(5).setPreferredWidth(200); // Doctor
 
-        doctorTable.getColumnModel().getColumn(3).setPreferredWidth(120);
+                patientTable.getColumnModel().getColumn(6).setPreferredWidth(180); // Completed At
 
-        doctorTable.getColumnModel().getColumn(4).setPreferredWidth(100);
+                DefaultTableCellRenderer center = new DefaultTableCellRenderer();
 
-        doctorTable.getColumnModel().getColumn(5).setPreferredWidth(60);
+                center.setHorizontalAlignment(JLabel.CENTER);
 
-        doctorTable.setAutoResizeMode(JTable.AUTO_RESIZE_OFF);
+                patientTable.getColumnModel().getColumn(0).setCellRenderer(center);
 
-        DefaultTableCellRenderer center = new DefaultTableCellRenderer();
+                patientTable.getColumnModel().getColumn(2).setCellRenderer(center);
 
-        center.setHorizontalAlignment(JLabel.CENTER);
+                patientTable.getColumnModel().getColumn(3).setCellRenderer(center);
 
-        doctorTable.getColumnModel().getColumn(0).setCellRenderer(center);
+                patientTable.getColumnModel().getColumn(6).setCellRenderer(center);
 
-        doctorTable.getColumnModel().getColumn(3).setCellRenderer(center);
+                // =========================
+                // ADD COMPONENTS
+                // =========================
+                mainPanel.add(topBar);
 
-        doctorTable.getColumnModel().getColumn(4).setCellRenderer(center);
+                mainPanel.add(title);
+                mainPanel.add(subtitle);
 
-        doctorTable.getColumnModel().getColumn(5).setCellRenderer(center);
+                mainPanel.add(searchField);
 
-        scrollPane.setBounds(
-                30,
-                80,
-                620,
-                330);
+                mainPanel.add(searchDoctorBtn);
 
-        // LOAD DOCTORS
-        try {
+                mainPanel.add(scrollPane);
 
-            Connection con = DBconnection.getConnection();
+                add(sideBar, BorderLayout.WEST);
+                add(mainPanel, BorderLayout.CENTER);
 
-            String query = "SELECT * FROM doctors";
+                // =========================
+                // LOAD DATA
+                // =========================
+                loadPatients();
 
-            PreparedStatement pst = con.prepareStatement(query);
+                // =========================
+                // SEARCH LOGIC
+                // =========================
+                searchField.addKeyListener(
+                                new java.awt.event.KeyAdapter() {
 
-            ResultSet rs = pst.executeQuery();
+                                        public void keyReleased(
+                                                        java.awt.event.KeyEvent e) {
 
-            while (rs.next()) {
+                                                searchPatients(
+                                                                searchField.getText());
+                                        }
+                                });
 
-                doctorModel.addRow(new Object[] {
-
-                        rs.getInt("doctor_id"),
-
-                        rs.getString("full_name"),
-
-                        rs.getString("specialization"),
-
-                        rs.getString("available_from"),
-
-                        rs.getString("available_to"),
-
-                        rs.getString("consultation_fee")
-                });
-            }
-
-        } catch (Exception ex) {
-
-            ex.printStackTrace();
+                setVisible(true);
         }
 
-        // SEARCH FILTER
-        searchDoctorField.addKeyListener(
-                new java.awt.event.KeyAdapter() {
+        // ====================================
+        // LOAD PATIENTS
+        // ====================================
+        private void loadPatients() {
 
-                    public void keyReleased(
-                            java.awt.event.KeyEvent e) {
+                try {
 
-                        String keyword = searchDoctorField.getText();
+                        Connection con = DBconnection.getConnection();
+                        String query = "SELECT " +
+                                        "old_patients.patient_id, " +
+                                        "old_patients.full_name, " +
+                                        "old_patients.age, " +
+                                        "old_patients.gender, " +
+                                        "old_patients.disease, " +
+                                        "doctors.full_name AS doctor_name, " +
+                                        "old_patients.completed_at " +
+                                        "FROM old_patients " +
+                                        "LEFT JOIN doctors " +
+                                        "ON old_patients.doctor_id = doctors.doctor_id " +
+                                        "ORDER BY old_patients.completed_at DESC";
 
-                        doctorModel.setRowCount(0);
+                        PreparedStatement pst = con.prepareStatement(query);
 
-                        try {
+                        ResultSet rs = pst.executeQuery();
 
-                            Connection con = DBconnection.getConnection();
+                        model.setRowCount(0);
 
-                            String query = "SELECT * FROM doctors " +
-                                    "WHERE full_name LIKE ? " +
-                                    "OR specialization LIKE ?";
+                        while (rs.next()) {
 
-                            PreparedStatement pst = con.prepareStatement(query);
+                                model.addRow(new Object[] {
 
-                            pst.setString(
-                                    1,
-                                    "%" + keyword + "%");
+                                                rs.getInt("patient_id"),
 
-                            pst.setString(
-                                    2,
-                                    "%" + keyword + "%");
+                                                rs.getString("full_name"),
 
-                            ResultSet rs = pst.executeQuery();
+                                                rs.getInt("age"),
 
-                            while (rs.next()) {
+                                                rs.getString("gender"),
+
+                                                rs.getString("disease"),
+
+                                                rs.getString("doctor_name"),
+
+                                                rs.getTimestamp("completed_at")
+                                });
+                        }
+
+                } catch (Exception ex) {
+
+                        ex.printStackTrace();
+                }
+        }
+
+        // ====================================
+        // SEARCH PATIENTS
+        // ====================================
+        private void searchPatients(String keyword) {
+
+                try {
+
+                        Connection con = DBconnection.getConnection();
+
+                        String query = "SELECT old_patients.*, doctors.full_name AS doctor_name " +
+                                        "FROM old_patients " +
+                                        "LEFT JOIN doctors " +
+                                        "ON old_patients.doctor_id = doctors.doctor_id " +
+                                        "WHERE old_patients.full_name LIKE ?";
+
+                        PreparedStatement pst = con.prepareStatement(query);
+
+                        pst.setString(
+                                        1,
+                                        "%" + keyword + "%");
+
+                        ResultSet rs = pst.executeQuery();
+
+                        model.setRowCount(0);
+
+                        while (rs.next()) {
+
+                                model.addRow(new Object[] {
+
+                                                rs.getInt("patient_id"),
+
+                                                rs.getString("full_name"),
+
+                                                rs.getInt("age"),
+
+                                                rs.getString("gender"),
+
+                                                rs.getString("disease"),
+
+                                                rs.getString("doctor_name"),
+
+                                                rs.getTimestamp("completed_at")
+                                });
+                        }
+
+                } catch (Exception ex) {
+
+                        ex.printStackTrace();
+                }
+        }
+
+        // check the doctor availabilty at the current time
+        private void openDoctorAvailabilityDialog() {
+
+                JDialog dialog = new JDialog(this,
+                                "Available Doctors",
+                                true);
+
+                dialog.setSize(700, 500);
+
+                dialog.setLocationRelativeTo(this);
+
+                dialog.setLayout(null);
+
+                dialog.setBackground(bgColor);
+
+                // SEARCH FIELD
+                RoundedTextField searchDoctorField = new RoundedTextField(20);
+
+                searchDoctorField.setBounds(
+                                30,
+                                20,
+                                620,
+                                40);
+
+                searchDoctorField.setFont(
+                                new Font("Segoe UI",
+                                                Font.PLAIN,
+                                                15));
+
+                // TABLE
+                String[] columns = {
+
+                                "ID",
+                                "Doctor Name",
+                                "Specialization",
+                                "Available From",
+                                "Available To",
+                                "Fee"
+                };
+
+                DefaultTableModel doctorModel = new DefaultTableModel(columns, 0);
+
+                JTable doctorTable = new JTable(doctorModel);
+
+                doctorTable.getTableHeader().setFont(
+                                new Font("Segoe UI", Font.BOLD, 14));
+
+                doctorTable.getTableHeader().setPreferredSize(new Dimension(100, 50));
+
+                doctorTable.getTableHeader().setBackground(primary);
+
+                doctorTable.getTableHeader().setForeground(Color.WHITE);
+
+                doctorTable.setRowHeight(35);
+                doctorTable.setFont(new Font("Segoe UI", Font.PLAIN, 12));
+
+                JScrollPane scrollPane = new JScrollPane(doctorTable);
+
+                doctorTable.getColumnModel().getColumn(0).setPreferredWidth(50);
+
+                doctorTable.getColumnModel().getColumn(1).setPreferredWidth(166);
+
+                doctorTable.getColumnModel().getColumn(2).setPreferredWidth(120);
+
+                doctorTable.getColumnModel().getColumn(3).setPreferredWidth(120);
+
+                doctorTable.getColumnModel().getColumn(4).setPreferredWidth(100);
+
+                doctorTable.getColumnModel().getColumn(5).setPreferredWidth(60);
+
+                doctorTable.setAutoResizeMode(JTable.AUTO_RESIZE_OFF);
+
+                DefaultTableCellRenderer center = new DefaultTableCellRenderer();
+
+                center.setHorizontalAlignment(JLabel.CENTER);
+
+                doctorTable.getColumnModel().getColumn(0).setCellRenderer(center);
+
+                doctorTable.getColumnModel().getColumn(3).setCellRenderer(center);
+
+                doctorTable.getColumnModel().getColumn(4).setCellRenderer(center);
+
+                doctorTable.getColumnModel().getColumn(5).setCellRenderer(center);
+
+                scrollPane.setBounds(
+                                30,
+                                80,
+                                620,
+                                330);
+
+                // LOAD DOCTORS
+                try {
+
+                        Connection con = DBconnection.getConnection();
+
+                        String query = "SELECT * FROM doctors";
+
+                        PreparedStatement pst = con.prepareStatement(query);
+
+                        ResultSet rs = pst.executeQuery();
+
+                        while (rs.next()) {
 
                                 doctorModel.addRow(new Object[] {
 
-                                        rs.getInt("doctor_id"),
+                                                rs.getInt("doctor_id"),
 
-                                        rs.getString("full_name"),
+                                                rs.getString("full_name"),
 
-                                        rs.getString("specialization"),
+                                                rs.getString("specialization"),
 
-                                        rs.getString("available_from"),
+                                                rs.getString("available_from"),
 
-                                        rs.getString("available_to"),
+                                                rs.getString("available_to"),
 
-                                        rs.getString("consultation_fee")
+                                                rs.getString("consultation_fee")
                                 });
-                            }
-
-                        } catch (Exception ex) {
-
-                            ex.printStackTrace();
                         }
-                    }
-                });
 
-        dialog.add(searchDoctorField);
+                } catch (Exception ex) {
 
-        dialog.add(scrollPane);
+                        ex.printStackTrace();
+                }
 
-        dialog.setVisible(true);
-    }
+                // SEARCH FILTER
+                searchDoctorField.addKeyListener(
+                                new java.awt.event.KeyAdapter() {
 
-    // ====================================
-    // SIDEBAR BUTTON
-    // ====================================
-    private JButton createSidebarButton(String text) {
+                                        public void keyReleased(
+                                                        java.awt.event.KeyEvent e) {
 
-        JButton btn = new JButton(text);
+                                                String keyword = searchDoctorField.getText();
 
-        btn.setFocusPainted(false);
+                                                doctorModel.setRowCount(0);
 
-        btn.setBorderPainted(false);
+                                                try {
 
-        btn.setBackground(primary);
+                                                        Connection con = DBconnection.getConnection();
 
-        btn.setForeground(Color.WHITE);
+                                                        String query = "SELECT * FROM doctors " +
+                                                                        "WHERE full_name LIKE ? " +
+                                                                        "OR specialization LIKE ?";
 
-        btn.setFont(
-                new Font("Segoe UI", Font.BOLD, 15));
+                                                        PreparedStatement pst = con.prepareStatement(query);
 
-        return btn;
-    }
-            private void setActiveButton(JButton activeBtn) {
+                                                        pst.setString(
+                                                                        1,
+                                                                        "%" + keyword + "%");
 
-                JButton[] buttons = { appointmentsBtn,patientsBtn,logoutBtn };
+                                                        pst.setString(
+                                                                        2,
+                                                                        "%" + keyword + "%");
+
+                                                        ResultSet rs = pst.executeQuery();
+
+                                                        while (rs.next()) {
+
+                                                                doctorModel.addRow(new Object[] {
+
+                                                                                rs.getInt("doctor_id"),
+
+                                                                                rs.getString("full_name"),
+
+                                                                                rs.getString("specialization"),
+
+                                                                                rs.getString("available_from"),
+
+                                                                                rs.getString("available_to"),
+
+                                                                                rs.getString("consultation_fee")
+                                                                });
+                                                        }
+
+                                                } catch (Exception ex) {
+
+                                                        ex.printStackTrace();
+                                                }
+                                        }
+                                });
+
+                dialog.add(searchDoctorField);
+
+                dialog.add(scrollPane);
+
+                dialog.setVisible(true);
+        }
+
+        // ====================================
+        // SIDEBAR BUTTON
+        // ====================================
+        private JButton createSidebarButton(String text) {
+
+                JButton btn = new JButton(text);
+
+                btn.setFocusPainted(false);
+
+                btn.setBorderPainted(false);
+
+                btn.setBackground(primary);
+
+                btn.setForeground(Color.WHITE);
+
+                btn.setFont(
+                                new Font("Segoe UI", Font.BOLD, 15));
+
+                return btn;
+        }
+
+        private void setActiveButton(JButton activeBtn) {
+
+                JButton[] buttons = { appointmentsBtn, patientsBtn, logoutBtn };
 
                 for (JButton btn : buttons) {
 

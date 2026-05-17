@@ -93,12 +93,12 @@ public class DoctorDashboard extends JFrame {
 
                 // logic for the active bar from the left side
 
-                dashboardBtn.addActionListener(e -> {
-                        setActiveButton(dashboardBtn);
-                });
+                setActiveButton(dashboardBtn);
 
                 patientBtn.addActionListener(e -> {
                         setActiveButton(patientBtn);
+                        new patientPortal_Doctor(doctorId, doctorName, specialization);
+                        dispose();
                 });
 
                 appointmentBtn.addActionListener(e -> {
@@ -119,8 +119,7 @@ public class DoctorDashboard extends JFrame {
                         if (confirm == JOptionPane.YES_OPTION) {
                                 new LoginUI();
                                 dispose();
-                        }
-                        else {
+                        } else {
                                 setActiveButton(dashboardBtn);
                         }
                 });
@@ -143,20 +142,18 @@ public class DoctorDashboard extends JFrame {
                 this.specialization = specialization;
 
                 JLabel doctorInfo = new JLabel("<html>" + doctorName + "<br>" + specialization + "</html>");
-                doctorInfo.setBounds(800, 25, 200, 50);
+                doctorInfo.setBounds(800, 20, 220, 50);
                 doctorInfo.setFont(new Font("Segoe UI", Font.BOLD, 18));
                 doctorInfo.setForeground(primary);
 
-                JLabel profilePic = new JLabel();
-                profilePic.setBounds(960, 25, 40, 40);
                 ImageIcon icon = new ImageIcon(
-                                new ImageIcon("images/profile_image.png")
-                                                .getImage()
-                                                .getScaledInstance(50, 50, Image.SCALE_SMOOTH));
-                profilePic.setIcon(icon);
+                                new ImageIcon("images/profile_image.png").getImage().getScaledInstance(50, 50,
+                                                Image.SCALE_SMOOTH));
+                doctorInfo.setIcon(icon);
 
-                // ✅ Align icon to the right side of the label
-                profilePic.setHorizontalAlignment(SwingConstants.RIGHT);
+                // ✅ Move icon to the right side
+                doctorInfo.setHorizontalTextPosition(SwingConstants.LEFT);
+                doctorInfo.setHorizontalAlignment(SwingConstants.RIGHT);
 
                 JLabel dashboardTitle = new JLabel("Doctor Dashboard");
                 dashboardTitle.setBounds(30, 25, 200, 30);
@@ -164,7 +161,6 @@ public class DoctorDashboard extends JFrame {
                 dashboardTitle.setForeground(darkText);
 
                 topBar.add(doctorInfo);
-                topBar.add(profilePic);
                 topBar.add(dashboardTitle);
                 // =========================
                 // PATIENT QUEUE PANEL
@@ -321,14 +317,9 @@ public class DoctorDashboard extends JFrame {
                 scrollPane.setOpaque(false);
 
                 // BUTTONS
-                RoundedButton recordBtn = new RoundedButton("View Records");
-                recordBtn.setBounds(710, 120, 150, 40);
-                recordBtn.setMargin(new Insets(5, 10, 5, 10));
-                recordBtn.setBackground(Color.WHITE);
-                recordBtn.setForeground(primary);
 
                 RoundedButton prescriptionBtn2 = new RoundedButton("Write Prescription");
-                prescriptionBtn2.setBounds(880, 120, 150, 40);
+                prescriptionBtn2.setBounds(830, 120, 180, 40);
                 prescriptionBtn2.setMargin(new Insets(5, 10, 5, 10));
                 prescriptionBtn2.setBackground(primary);
                 prescriptionBtn2.setForeground(Color.WHITE);
@@ -355,7 +346,6 @@ public class DoctorDashboard extends JFrame {
                 mainPanel.add(notesLabel);
                 mainPanel.add(scrollPane);
                 mainPanel.add(nextPatientBtn);
-                mainPanel.add(recordBtn);
                 mainPanel.add(prescriptionBtn2);
 
                 add(sideBar, BorderLayout.WEST);
