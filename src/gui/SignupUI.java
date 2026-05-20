@@ -6,10 +6,8 @@ import java.awt.event.*;
 import java.sql.*;
 import src.db.DBconnection;
 
-public class SignupUI extends JFrame 
-{
-    public SignupUI()
-    {
+public class SignupUI extends JFrame {
+    public SignupUI() {
 
         // Main panel with title hospital management on title bar user
         setTitle("Hospital Management System - Signup");
@@ -17,20 +15,18 @@ public class SignupUI extends JFrame
         setLocationRelativeTo(null);
         setDefaultCloseOperation(EXIT_ON_CLOSE);
 
-        Color bgColor = Color.decode("#F2EFE7");        //Background Color
-        Color fgColor = Color.decode("#00A19B");        //Forground Color
+        Color bgColor = Color.decode("#F2EFE7"); // Background Color
+        Color fgColor = Color.decode("#00A19B"); // Forground Color
 
         // MAIN PANEL (SPLIT) into the Border Layout
-       setLayout(new BorderLayout());
+        setLayout(new BorderLayout());
 
         // LEFT PANEL (IMAGE) we add the image in the left side
-        JPanel leftPanel = new JPanel() 
-        {
+        JPanel leftPanel = new JPanel() {
             Image image = new ImageIcon("images/login2.png").getImage();
 
             @Override
-            protected void paintComponent(Graphics g) 
-            {
+            protected void paintComponent(Graphics g) {
                 super.paintComponent(g);
 
                 int panelWidth = getWidth();
@@ -40,9 +36,8 @@ public class SignupUI extends JFrame
                 int imgHeight = image.getHeight(null);
 
                 double scale = Math.max(
-                (double) panelWidth / imgWidth,
-                (double) panelHeight / imgHeight
-                    );
+                        (double) panelWidth / imgWidth,
+                        (double) panelHeight / imgHeight);
 
                 int newWidth = (int) (imgWidth * scale);
                 int newHeight = (int) (imgHeight * scale);
@@ -53,7 +48,7 @@ public class SignupUI extends JFrame
                 g.drawImage(image, x, y, newWidth, newHeight, this);
             }
         };
-        //we use different panel for each one field
+        // we use different panel for each one field
         JPanel roleContainer = new JPanel();
         roleContainer.setLayout(null);
         roleContainer.setBounds(0, 150, 425, 450);
@@ -69,7 +64,8 @@ public class SignupUI extends JFrame
         receptionistPanel.setLayout(null);
         receptionistPanel.setBackground(bgColor);
 
-        // RIGHT PANEL (Main Login credentials) it contain all credential we can get according to role
+        // RIGHT PANEL (Main Login credentials) it contain all credential we can get
+        // according to role
         JPanel rightPanel = new JPanel();
         rightPanel.setPreferredSize(new Dimension(425, 0)); // we can adjust the right panel from here
         rightPanel.setBackground(bgColor);
@@ -81,80 +77,80 @@ public class SignupUI extends JFrame
         title.setFont(new Font("Segoe UI", Font.BOLD, 50));
         title.setForeground(fgColor); // use the main forground color here
 
-        //use role to change the credential of the sign up
+        // use role to change the credential of the sign up
         JLabel roleLabel = new JLabel("Role:");
         roleLabel.setBounds(95, 140, 100, 25);
-        roleLabel.setFont(new Font("Segoe UI",Font.BOLD,14));
-        roleLabel.setForeground(fgColor);    
+        roleLabel.setFont(new Font("Segoe UI", Font.BOLD, 14));
+        roleLabel.setForeground(fgColor);
 
-        String[] roles = {"Admin", "Doctor", "Receptionist", "Nurse"};
+        String[] roles = { "Admin", "Doctor", "Receptionist", "Nurse" };
         RoundedComboBox<String> roleBox = new RoundedComboBox<>(roles);
         roleBox.setBounds(150, 130, 220, 40);
-        roleBox.setFont(new Font("Segoe UI",Font.BOLD,12));
+        roleBox.setFont(new Font("Segoe UI", Font.BOLD, 12));
         roleBox.setForeground(Color.BLACK);
 
-        //Name fields that get full name
+        // Name fields that get full name
         JLabel firstname = new JLabel("Full Name:");
-        firstname.setBounds(60,187,100,25);
-        firstname.setFont(new Font("Segoe UI",Font.BOLD,14));
+        firstname.setBounds(60, 187, 100, 25);
+        firstname.setFont(new Font("Segoe UI", Font.BOLD, 14));
         firstname.setForeground(fgColor);
 
         RoundedTextField nameField = new RoundedTextField(20);
-        nameField.setBounds(150,183,220,30);
+        nameField.setBounds(150, 183, 220, 30);
         nameField.setMargin(new Insets(5, 10, 5, 10));
 
         JLabel genderLabel = new JLabel("Gender:");
-        genderLabel.setFont(new Font("Segoe UI",Font.BOLD,14));
+        genderLabel.setFont(new Font("Segoe UI", Font.BOLD, 14));
         genderLabel.setForeground(fgColor);
-        genderLabel.setBounds(81,238,100,25);
+        genderLabel.setBounds(81, 238, 100, 25);
 
-        String[] gender = {"Male","Female","Other"};
+        String[] gender = { "Male", "Female", "Other" };
         RoundedComboBox<String> genderBox = new RoundedComboBox<>(gender);
-        genderBox.setBounds(150,230,220,40); 
-        genderBox.setFont(new Font("Segoe UI",Font.BOLD,12));
+        genderBox.setBounds(150, 230, 220, 40);
+        genderBox.setFont(new Font("Segoe UI", Font.BOLD, 12));
         genderBox.setForeground(Color.BLACK);
 
         JLabel EmailLable = new JLabel("Email:");
-        EmailLable.setBounds(94,285,100,25);
-        EmailLable.setFont(new Font("Segoe UI",Font.BOLD,14));
+        EmailLable.setBounds(94, 285, 100, 25);
+        EmailLable.setFont(new Font("Segoe UI", Font.BOLD, 14));
         EmailLable.setForeground(fgColor);
 
         RoundedTextField EmailField = new RoundedTextField(20);
-        EmailField.setBounds(150,280,220,30);
+        EmailField.setBounds(150, 280, 220, 30);
         EmailField.setMargin(new Insets(5, 10, 5, 10));
 
         JLabel usernameLabel = new JLabel("Username:");
-        usernameLabel.setBounds(72,335,100,25);
-        usernameLabel.setFont(new Font("Segoe UI",Font.BOLD,14));
+        usernameLabel.setBounds(72, 335, 100, 25);
+        usernameLabel.setFont(new Font("Segoe UI", Font.BOLD, 14));
         usernameLabel.setForeground(fgColor);
 
         RoundedTextField usernamTextField = new RoundedTextField(20);
-        usernamTextField.setBounds(150,330,220,30);
+        usernamTextField.setBounds(150, 330, 220, 30);
         usernamTextField.setMargin(new Insets(5, 10, 5, 10));
 
         JLabel passwordLabel = new JLabel("Password:");
-        passwordLabel.setBounds(73,385,100,25);
-        passwordLabel.setFont(new Font("Segoe UI",Font.BOLD,14));
+        passwordLabel.setBounds(73, 385, 100, 25);
+        passwordLabel.setFont(new Font("Segoe UI", Font.BOLD, 14));
         passwordLabel.setForeground(fgColor);
 
         RoundedPasswordField passwordTextField = new RoundedPasswordField(20);
-        passwordTextField.setBounds(150,380,220,30);
+        passwordTextField.setBounds(150, 380, 220, 30);
 
         JLabel cPasswordLabel = new JLabel("Confirm Password:");
-        cPasswordLabel.setBounds(20,435,150,25);
-        cPasswordLabel.setFont(new Font("Segoe UI",Font.BOLD,14));
+        cPasswordLabel.setBounds(20, 435, 150, 25);
+        cPasswordLabel.setFont(new Font("Segoe UI", Font.BOLD, 14));
         cPasswordLabel.setForeground(fgColor);
 
         RoundedPasswordField cPasswordTextField = new RoundedPasswordField(20);
-        cPasswordTextField.setBounds(150,430,220,30);
+        cPasswordTextField.setBounds(150, 430, 220, 30);
 
         RoundedButton signupButton = new RoundedButton("Sign Up");
-        signupButton.setBounds(80,490,280,30);
+        signupButton.setBounds(80, 490, 280, 30);
         signupButton.setMargin(new Insets(5, 10, 5, 10));
         signupButton.setForeground(bgColor);
         signupButton.setBackground(fgColor);
 
-        //already have account option 
+        // already have account option
         JLabel loginText = new JLabel("<html>Already have an account? <u>Login</u></html>");
         loginText.setBounds(120, 530, 250, 30);
         loginText.setFont(new Font("Segoe UI", Font.BOLD, 14));
@@ -182,9 +178,8 @@ public class SignupUI extends JFrame
         add(leftPanel, BorderLayout.CENTER);
         add(rightPanel, BorderLayout.EAST);
 
-        //logic that send back to the login page for the alreaday hava account field
-        loginText.addMouseListener(new MouseAdapter() 
-        {
+        // logic that send back to the login page for the alreaday hava account field
+        loginText.addMouseListener(new MouseAdapter() {
 
             @Override
             public void mouseClicked(MouseEvent e) {
@@ -195,8 +190,8 @@ public class SignupUI extends JFrame
             }
         });
 
-        //checking the format of the credentail that it is valid
-        //also if the user can enter all the credentials that the data is saved in DB
+        // checking the format of the credentail that it is valid
+        // also if the user can enter all the credentials that the data is saved in DB
         signupButton.addActionListener(new ActionListener() {
 
             @Override
@@ -253,6 +248,16 @@ public class SignupUI extends JFrame
                     return;
                 }
 
+                // NO SPACES + ONLY LETTERS NUMBERS UNDERSCORE
+                if (!username.matches("^[A-Za-z0-9_]+$")) {
+
+                    JOptionPane.showMessageDialog(
+                            null,
+                            "Username can only contain letters, numbers and underscore (_) with no spaces!");
+
+                    return;
+                }
+
                 // PASSWORD
                 if (password.isEmpty()) {
 
@@ -285,7 +290,8 @@ public class SignupUI extends JFrame
 
                     Connection con = DBconnection.getConnection();
 
-                    String query = "INSERT INTO users " + "(fullname, gender, role, email, username, password) " + "VALUES (?, ?, ?, ?, ?, ?)";
+                    String query = "INSERT INTO users " + "(fullname, gender, role, email, username, password) "
+                            + "VALUES (?, ?, ?, ?, ?, ?)";
 
                     PreparedStatement pst = con.prepareStatement(query);
 
@@ -332,7 +338,7 @@ public class SignupUI extends JFrame
             }
         });
 
-    setVisible(true);
+        setVisible(true);
     }
-    
+
 }

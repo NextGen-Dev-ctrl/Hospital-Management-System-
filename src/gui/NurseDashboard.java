@@ -439,17 +439,13 @@ public class NurseDashboard extends JFrame {
 
                                         String bp = systolicSpinner.getValue().toString()
                                                         + "/"
-                                                        + diastolicSpinner.getValue().toString()
-                                                        + " mmHg";
+                                                        + diastolicSpinner.getValue().toString();
 
-                                        String weight = weightSpinner.getValue().toString()
-                                                        + " kg";
+                                        String weight = weightSpinner.getValue().toString();
 
-                                        String temp = tempSpinner.getValue().toString()
-                                                        + " °F";
+                                        String temp = tempSpinner.getValue().toString();
 
-                                        String heart = heartSpinner.getValue().toString()
-                                                        + " BPM";
+                                        String heart = heartSpinner.getValue().toString();
 
                                         Connection con = DBconnection.getConnection();
 
@@ -465,7 +461,7 @@ public class NurseDashboard extends JFrame {
 
                                                         "nurse_status = 'Completed', " +
 
-                                                        "status = 'Ready' " +
+                                                        "status = 'Pending' " +
 
                                                         "WHERE patient_id = ?";
 
