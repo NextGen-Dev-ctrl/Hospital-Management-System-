@@ -11,7 +11,6 @@ public class DoctorDashboard extends JFrame {
         private JButton dashboardBtn;
         private JButton patientBtn;
         private JButton appointmentBtn;
-        private JButton prescriptionBtn;
         private JButton logoutBtn;
         private JLabel bpValueLabel;
         private JLabel weightValueLabel;
@@ -78,9 +77,6 @@ public class DoctorDashboard extends JFrame {
                 appointmentBtn = createSidebarButton("Appointments");
                 appointmentBtn.setBounds(0, 250, 220, 45);
 
-                prescriptionBtn = createSidebarButton("Prescriptions");
-                prescriptionBtn.setBounds(0, 310, 220, 45);
-
                 logoutBtn = createSidebarButton("Logout");
                 logoutBtn.setBounds(0, 585, 220, 45);
 
@@ -88,7 +84,6 @@ public class DoctorDashboard extends JFrame {
                 sideBar.add(dashboardBtn);
                 sideBar.add(patientBtn);
                 sideBar.add(appointmentBtn);
-                sideBar.add(prescriptionBtn);
                 sideBar.add(logoutBtn);
 
                 // logic for the active bar from the left side
@@ -99,14 +94,6 @@ public class DoctorDashboard extends JFrame {
                         setActiveButton(patientBtn);
                         new patientPortal_Doctor(doctorId, doctorName, specialization);
                         dispose();
-                });
-
-                appointmentBtn.addActionListener(e -> {
-                        setActiveButton(appointmentBtn);
-                });
-
-                prescriptionBtn.addActionListener(e -> {
-                        setActiveButton(prescriptionBtn);
                 });
 
                 logoutBtn.addActionListener(e -> {
@@ -123,7 +110,11 @@ public class DoctorDashboard extends JFrame {
                                 setActiveButton(dashboardBtn);
                         }
                 });
-
+                appointmentBtn.addActionListener(e -> {
+                        setActiveButton(appointmentBtn);
+                        new AppointmentPortal_Doctor(doctorId, doctorName, specialization);
+                        dispose();
+                });
                 // =========================
                 // MAIN PANEL
                 // =========================
@@ -502,7 +493,7 @@ public class DoctorDashboard extends JFrame {
         // active button
         private void setActiveButton(JButton activeBtn) {
 
-                JButton[] buttons = { dashboardBtn, patientBtn, appointmentBtn, prescriptionBtn, logoutBtn };
+                JButton[] buttons = { dashboardBtn, patientBtn, appointmentBtn, logoutBtn };
 
                 for (JButton btn : buttons) {
 
@@ -757,6 +748,7 @@ public class DoctorDashboard extends JFrame {
 
                 RoundedTextField medicineField = new RoundedTextField(20);
                 medicineField.setBounds(30, 80, 600, 40);
+                medicineField.setHint("Type medicine name here...");
 
                 DefaultComboBoxModel<String> medicineModel = new DefaultComboBoxModel<>();
                 RoundedComboBox<String> medicineBox = new RoundedComboBox<>(medicineModel);

@@ -13,7 +13,6 @@ public class patientPortal_Doctor extends JFrame {
     private JButton dashboardBtn;
     private JButton patientBtn;
     private JButton appointmentBtn;
-    private JButton prescriptionBtn;
     private JButton logoutBtn;
     private JTable patientTable;
     private DefaultTableModel model;
@@ -60,9 +59,6 @@ public class patientPortal_Doctor extends JFrame {
         appointmentBtn = createSidebarButton("Appointments");
         appointmentBtn.setBounds(0, 250, 220, 45);
 
-        prescriptionBtn = createSidebarButton("Prescriptions");
-        prescriptionBtn.setBounds(0, 310, 220, 45);
-
         logoutBtn = createSidebarButton("Logout");
         logoutBtn.setBounds(0, 585, 220, 45);
 
@@ -70,7 +66,6 @@ public class patientPortal_Doctor extends JFrame {
         sideBar.add(dashboardBtn);
         sideBar.add(patientBtn);
         sideBar.add(appointmentBtn);
-        sideBar.add(prescriptionBtn);
         sideBar.add(logoutBtn);
 
         // default active button
@@ -94,6 +89,11 @@ public class patientPortal_Doctor extends JFrame {
             } else {
                 setActiveButton(patientBtn);
             }
+        });
+        appointmentBtn.addActionListener(e -> {
+            setActiveButton(appointmentBtn);
+            new AppointmentPortal_Doctor(doctorId, doctorName, specialization);
+            dispose();
         });
         // =========================
         // =========================
@@ -459,7 +459,7 @@ public class patientPortal_Doctor extends JFrame {
         // =========================
         JLabel healthTitle = new JLabel("Vitals & Notes");
 
-        healthTitle.setBounds(30, 70, 250, 30);
+        healthTitle.setBounds(40, 70, 250, 30);
 
         healthTitle.setFont(
                 new Font("Segoe UI", Font.BOLD, 20));
@@ -571,7 +571,7 @@ public class patientPortal_Doctor extends JFrame {
         // =========================
         JLabel prescriptionTitle = new JLabel("Prescription History");
 
-        prescriptionTitle.setBounds(30, 400, 300, 30);
+        prescriptionTitle.setBounds(40, 400, 300, 30);
 
         prescriptionTitle.setFont(
                 new Font("Segoe UI", Font.BOLD, 20));
@@ -725,7 +725,7 @@ public class patientPortal_Doctor extends JFrame {
 
     private void setActiveButton(JButton activeBtn) {
 
-        JButton[] buttons = { dashboardBtn, patientBtn, appointmentBtn, prescriptionBtn, logoutBtn };
+        JButton[] buttons = { dashboardBtn, patientBtn, appointmentBtn, logoutBtn };
 
         for (JButton btn : buttons) {
 
