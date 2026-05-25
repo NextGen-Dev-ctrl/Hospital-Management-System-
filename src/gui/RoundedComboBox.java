@@ -94,7 +94,7 @@ public class RoundedComboBox<E> extends JComboBox<E> {
                 RenderingHints.VALUE_ANTIALIAS_ON);
 
         // Border color
-        g2.setColor(new Color(200, 200, 200));
+        g2.setColor(Color.WHITE);
         g2.drawRoundRect(0, 0, getWidth() - 1, getHeight() - 1, 25, 25);
 
         g2.dispose();
