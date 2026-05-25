@@ -18,7 +18,6 @@ public class LoginUI extends JFrame {
                 Color bgColor = Color.decode("#F2EFE7"); // Background Color
                 Color fgColor = Color.decode("#00A19B"); // Forground Color
 
-
                 // MAIN PANEL (SPLIT) into the Border Layout
                 setLayout(new BorderLayout());
 
@@ -59,6 +58,9 @@ public class LoginUI extends JFrame {
 
                 ShadowPanel shadowPanel = new ShadowPanel();
                 shadowPanel.setBounds(20, 20, 400, 580);
+                shadowPanel.setShadowColor(new Color(0, 0, 0, 6));
+                shadowPanel.setRadius(70);
+                shadowPanel.setBackground(Color.WHITE);
                 shadowPanel.setLayout(null);
                 rightPanel.add(shadowPanel);
 
@@ -100,6 +102,10 @@ public class LoginUI extends JFrame {
                 RoundedButton loginBtn = new RoundedButton("Login");
                 loginBtn.setBounds(25, 370, 340, 50);
                 loginBtn.setMargin(new Insets(5, 10, 5, 10));
+                loginBtn.setFont(new Font("Segoe UI", Font.BOLD, 16));
+                loginBtn.setRadius(30);
+                loginBtn.setShadowSize(10);
+                loginBtn.setShadowOpacity(15);
                 loginBtn.setBackground(fgColor);
                 loginBtn.setForeground(Color.WHITE);
                 // loginBtn.setButtonIcon("images/login.png");
@@ -108,6 +114,10 @@ public class LoginUI extends JFrame {
                 RoundedButton signupBtn = new RoundedButton("Signup");
                 signupBtn.setBounds(25, 440, 340, 50);
                 signupBtn.setMargin(new Insets(5, 10, 5, 10));
+                signupBtn.setFont(new Font("Segoe UI", Font.BOLD, 16));
+                signupBtn.setRadius(30);
+                signupBtn.setShadowSize(10);
+                signupBtn.setShadowOpacity(15);
                 signupBtn.setBackground(Color.WHITE);
                 signupBtn.setForeground(fgColor);
                 signupBtn.setBorderColor(fgColor);
@@ -117,6 +127,47 @@ public class LoginUI extends JFrame {
                 forgot.setBounds(0, 500, shadowPanel.getWidth(), 30);
                 forgot.setHorizontalAlignment(SwingConstants.CENTER);
                 forgot.setForeground(fgColor);
+
+                // =========================
+                // LEFT SIDE TEXT
+                // =========================
+
+                // MAIN HEADING
+                JLabel welcomeText = new JLabel("Welcome to MediSync HMS");
+
+                welcomeText.setBounds(
+                                50,
+                                460,
+                                700,
+                                60);
+
+                welcomeText.setFont(
+                                new Font("Segoe UI", Font.BOLD, 34));
+
+                welcomeText.setForeground(Color.WHITE);
+
+                // SUBTEXT
+                JLabel subText = new JLabel(
+                                "<html>Modern Hospital Management System<br>" +
+                                                "for Doctors, Nurses and Receptionists</html>");
+
+                subText.setBounds(
+                                50,
+                                510,
+                                500,
+                                80);
+
+                subText.setFont(
+                                new Font("Segoe UI", Font.PLAIN, 18));
+
+                subText.setForeground(Color.WHITE);
+
+                // IMPORTANT
+                leftPanel.setLayout(null);
+
+                // ADD TO LEFT PANEL
+                leftPanel.add(welcomeText);
+                leftPanel.add(subText);
 
                 // Add all component on the pannel
                 shadowPanel.add(title);
