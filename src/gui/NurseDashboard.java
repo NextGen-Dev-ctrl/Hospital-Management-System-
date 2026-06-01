@@ -113,7 +113,6 @@ public class NurseDashboard extends JFrame {
                                 .getScaledInstance(50, 50, Image.SCALE_SMOOTH));
                 nurseLabel.setIcon(icon);
 
-                // ✅ Move icon to the right side
                 nurseLabel.setHorizontalTextPosition(SwingConstants.LEFT);
                 nurseLabel.setHorizontalAlignment(SwingConstants.RIGHT);
                 topBar.add(nurseLabel);
@@ -296,7 +295,7 @@ public class NurseDashboard extends JFrame {
                         dialog.setLayout(null);
 
                         dialog.getContentPane().setBackground(
-                                        Color.decode("#E4DDD3"));
+                                        Color.decode("#F2EFE7"));
 
                         Color primary = Color.decode("#00A19B");
 
