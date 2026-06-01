@@ -21,9 +21,9 @@ public class DoctorDashboard extends JFrame {
         private JLabel patientInfo;
         private roundedTextArea notesArea;
         // For patient queue we use the global private variable
-        private JPanel patientCard1;
-        private JPanel patientCard2;
-        private JPanel patientCard3;
+        private ShadowPanel patientCard1;
+        private ShadowPanel patientCard2;
+        private ShadowPanel patientCard3;
 
         private JLabel patient1Name;
         private JLabel patient1Disease;
@@ -156,8 +156,9 @@ public class DoctorDashboard extends JFrame {
                 // =========================
                 // PATIENT QUEUE PANEL
                 // =========================
-                JPanel queuePanel = new RoundedPanel(30);
-                queuePanel.setBounds(30, 110, 260, 560);
+                ShadowPanel queuePanel = new ShadowPanel();
+                queuePanel.setBounds(30, 110, 280, 560);
+                queuePanel.setShadowColor(new Color(0, 0, 0, 6));
                 queuePanel.setBackground(Color.WHITE);
                 queuePanel.setLayout(null);
 
@@ -168,43 +169,49 @@ public class DoctorDashboard extends JFrame {
                                 Image.SCALE_SMOOTH)));
 
                 // PATIENT CARD 1
-                patientCard1 = new RoundedPanel(20);
-                patientCard1.setBounds(20, 80, 220, 110);
+                patientCard1 = new ShadowPanel();
+                patientCard1.setBounds(20, 80, 230, 130);
+                patientCard1.setShadowColor(new Color(0, 0, 0, 6));
                 patientCard1.setBackground(primary);
                 patientCard1.setLayout(null);
 
                 patient1Name = new JLabel();
-                patient1Name.setBounds(20, 15, 200, 25);
+                patient1Name.setBounds(30, 15, 200, 25);
                 patient1Name.setForeground(Color.WHITE);
                 patient1Name.setFont(new Font("Segoe UI", Font.BOLD, 18));
 
                 patient1Disease = new JLabel();
-                patient1Disease.setBounds(20, 45, 150, 20);
+                patient1Disease.setBounds(30, 45, 150, 20);
                 patient1Disease.setForeground(Color.WHITE);
+                patient1Disease.setFont(new Font("Segoe UI", Font.PLAIN, 14));
 
                 patient1Status = new JLabel("READY");
-                patient1Status.setBounds(20, 75, 80, 20);
+                patient1Status.setBounds(30, 80, 80, 20);
                 patient1Status.setForeground(Color.WHITE);
+                patient1Status.setFont(new Font("Segoe UI", Font.PLAIN, 14));
 
                 patientCard1.add(patient1Name);
                 patientCard1.add(patient1Disease);
                 patientCard1.add(patient1Status);
 
                 // PATIENT CARD 2
-                patientCard2 = new RoundedPanel(20);
-                patientCard2.setBounds(20, 220, 220, 110);
-                patientCard2.setBackground(bgColor);
+                patientCard2 = new ShadowPanel();
+                patientCard2.setBounds(20, 220, 230, 130);
+                patientCard2.setShadowColor(new Color(0, 0, 0, 6));
+                patientCard2.setBackground(Color.WHITE);
                 patientCard2.setLayout(null);
 
                 patient2Name = new JLabel();
-                patient2Name.setBounds(20, 15, 200, 25);
+                patient2Name.setBounds(30, 15, 200, 25);
                 patient2Name.setFont(new Font("Segoe UI", Font.BOLD, 16));
 
                 patient2Disease = new JLabel();
-                patient2Disease.setBounds(20, 45, 150, 20);
+                patient2Disease.setBounds(30, 45, 150, 20);
+                patient2Disease.setFont(new Font("Segoe UI", Font.PLAIN, 14));
 
                 patient2Status = new JLabel("PENDING");
-                patient2Status.setBounds(20, 75, 80, 20);
+                patient2Status.setBounds(30, 80, 80, 20);
+                patient2Status.setFont(new Font("Segoe UI", Font.PLAIN, 14));
                 patient2Status.setForeground(primary);
 
                 patientCard2.add(patient2Name);
@@ -212,20 +219,23 @@ public class DoctorDashboard extends JFrame {
                 patientCard2.add(patient2Status);
 
                 // PATIENT CARD 3
-                patientCard3 = new RoundedPanel(20);
-                patientCard3.setBounds(20, 360, 220, 110);
-                patientCard3.setBackground(bgColor);
+                patientCard3 = new ShadowPanel();
+                patientCard3.setBounds(20, 360, 230, 130);
+                patientCard3.setShadowColor(new Color(0, 0, 0, 6));
+                patientCard3.setBackground(Color.WHITE);
                 patientCard3.setLayout(null);
 
                 patient3Name = new JLabel();
-                patient3Name.setBounds(20, 15, 200, 25);
+                patient3Name.setBounds(30, 15, 200, 25);
                 patient3Name.setFont(new Font("Segoe UI", Font.BOLD, 16));
 
                 patient3Disease = new JLabel();
-                patient3Disease.setBounds(20, 45, 150, 20);
+                patient3Disease.setBounds(30, 45, 150, 20);
+                patient3Disease.setFont(new Font("Segoe UI", Font.PLAIN, 14));
 
                 patient3Status = new JLabel("PENDING");
-                patient3Status.setBounds(20, 75, 80, 20);
+                patient3Status.setBounds(30, 80, 80, 20);
+                patient3Status.setFont(new Font("Segoe UI", Font.PLAIN, 14));
                 patient3Status.setForeground(primary);
 
                 patientCard3.add(patient3Name);
@@ -289,11 +299,17 @@ public class DoctorDashboard extends JFrame {
                 notesLabel.setForeground(primary);
 
                 RoundedButton nextPatientBtn = new RoundedButton("Complete & Next Patient");
-                nextPatientBtn.setBounds(810, 350, 200, 30);
+                nextPatientBtn.setBounds(800, 350, 220, 35);
                 nextPatientBtn.setMargin(new Insets(5, 10, 5, 10));
+                nextPatientBtn.setRadius(30);
+                nextPatientBtn.setShadowSize(10);
+                nextPatientBtn.setShadowOpacity(15);
                 nextPatientBtn.setBackground(primary);
                 nextPatientBtn.setForeground(Color.WHITE);
                 nextPatientBtn.setFont(new Font("Segoe UI", Font.BOLD, 14));
+                nextPatientBtn.setIcon(
+                                new ImageIcon(new ImageIcon("images/checked.png").getImage().getScaledInstance(23, 23,
+                                                Image.SCALE_SMOOTH)));
 
                 notesArea = new roundedTextArea();
                 notesArea.setHint("Type your diagnostic notes here...");
@@ -310,10 +326,17 @@ public class DoctorDashboard extends JFrame {
                 // BUTTONS
 
                 RoundedButton prescriptionBtn2 = new RoundedButton("Write Prescription");
-                prescriptionBtn2.setBounds(830, 120, 180, 40);
+                prescriptionBtn2.setBounds(800, 120, 200, 40);
                 prescriptionBtn2.setMargin(new Insets(5, 10, 5, 10));
+                prescriptionBtn2.setFont(new Font("Segoe UI", Font.BOLD, 14));
                 prescriptionBtn2.setBackground(primary);
                 prescriptionBtn2.setForeground(Color.WHITE);
+                prescriptionBtn2.setRadius(30);
+                prescriptionBtn2.setShadowSize(10);
+                prescriptionBtn2.setShadowOpacity(15);
+                prescriptionBtn2.setIcon(
+                                new ImageIcon(new ImageIcon("images/capsule.png").getImage().getScaledInstance(22, 22,
+                                                Image.SCALE_SMOOTH)));
 
                 // prescripton button action listener to open the prescription writing interface
                 // which can be implemented as a new JFrame or a JDialog
@@ -517,9 +540,10 @@ public class DoctorDashboard extends JFrame {
                         int x,
                         int y) {
 
-                JPanel panel = new RoundedPanel(25);
+                ShadowPanel panel = new ShadowPanel();
 
-                panel.setBounds(x, y, 160, 100);
+                panel.setBounds(x, y, 185, 125);
+                panel.setShadowColor(new Color(0, 0, 0, 5));
                 panel.setBackground(Color.WHITE);
                 panel.setLayout(null);
 
@@ -545,7 +569,7 @@ public class DoctorDashboard extends JFrame {
                 else if (title.contains("HEART")) {
                         heartValueLabel = valueLabel;
                 }
-                valueLabel.setBounds(20, 50, 100, 40);
+                valueLabel.setBounds(20, 50, 120, 40);
                 valueLabel.setFont(new Font("Segoe UI", Font.BOLD, 24));
                 valueLabel.setForeground(Color.decode("#00A19B"));
 
@@ -569,7 +593,6 @@ public class DoctorDashboard extends JFrame {
                         String query = "SELECT * FROM patients " +
                                         "WHERE doctor_id = ? " +
                                         "AND status IN ('Ready','Pending') " +
-                                        "AND nurse_status = 'Completed' " +
                                         "ORDER BY " +
                                         "CASE " +
                                         "WHEN status = 'Ready' THEN 1 " +
@@ -664,7 +687,6 @@ public class DoctorDashboard extends JFrame {
 
                         String query = "SELECT * FROM patients " +
                                         "WHERE doctor_id = ? " +
-                                        "AND nurse_status = 'Completed' " +
                                         "AND status IN ('Ready', 'Pending') " +
                                         "ORDER BY " +
                                         "CASE " +
@@ -768,9 +790,16 @@ public class DoctorDashboard extends JFrame {
                 // delete button to remove the medicine from the combo box and also from the
                 // database
                 RoundedButton addMedicineBtn = new RoundedButton("Add Medicine");
-                addMedicineBtn.setBounds(30, 370, 130, 40);
+                addMedicineBtn.setBounds(30, 370, 170, 40);
+                addMedicineBtn.setFont(new Font("Segoe UI", Font.BOLD, 14));
                 addMedicineBtn.setBackground(primary);
                 addMedicineBtn.setForeground(Color.WHITE);
+                addMedicineBtn.setRadius(30);
+                addMedicineBtn.setShadowSize(10);
+                addMedicineBtn.setShadowOpacity(15);
+                addMedicineBtn.setIcon(
+                                new ImageIcon(new ImageIcon("images/add.png").getImage().getScaledInstance(23, 23,
+                                                Image.SCALE_SMOOTH)));
 
                 // add madicine button action listener to add the medicine from the text field
                 // to the combo box and also save it in the database with the current patient id
@@ -847,11 +876,16 @@ public class DoctorDashboard extends JFrame {
                 // stock of the medicine in the database automatically when the prescription is
                 // sent to the pharmacy
                 RoundedButton sendBtn = new RoundedButton("Send to Pharmacy");
-
+                sendBtn.setFont(new Font("Segoe UI", Font.BOLD, 14));
                 sendBtn.setBounds(430, 370, 220, 40);
-
+                sendBtn.setRadius(30);
+                sendBtn.setShadowSize(10);
+                sendBtn.setShadowOpacity(15);
                 sendBtn.setBackground(primary);
                 sendBtn.setForeground(Color.WHITE);
+                sendBtn.setIcon(
+                                new ImageIcon(new ImageIcon("images/send.png").getImage().getScaledInstance(23, 23,
+                                                Image.SCALE_SMOOTH)));
 
                 // Auto search filter to search for medicines in the database and display them
                 // in the combo box as the user types in the medicine text field
