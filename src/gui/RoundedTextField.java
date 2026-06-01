@@ -41,7 +41,7 @@ public class RoundedTextField extends JTextField {
     @Override
     protected void paintBorder(Graphics g) {
         Graphics2D g2 = (Graphics2D) g.create();
-        g2.setColor(Color.GRAY);
+        g2.setColor(new Color(220, 220, 220));
         g2.drawRoundRect(0, 0, getWidth() - 1, getHeight() - 1, 25, 25);
         g2.dispose();
     }
