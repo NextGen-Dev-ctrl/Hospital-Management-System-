@@ -290,7 +290,7 @@ public class SignupUI extends JFrame {
 
                     Connection con = DBconnection.getConnection();
 
-                    String query = "INSERT INTO users " + "(fullname, gender, role, email, username, password) "
+                    String query = "INSERT INTO pending_users " + "(fullname, gender, role, email, username, password) "
                             + "VALUES (?, ?, ?, ?, ?, ?)";
 
                     PreparedStatement pst = con.prepareStatement(query);
@@ -307,7 +307,8 @@ public class SignupUI extends JFrame {
                     if (rows > 0) {
 
                         JOptionPane.showMessageDialog(null,
-                                "Signup Successful!");
+                                "Signup Request Submitted.\n" + //
+                                        "Waiting for Admin Approval.!");
 
                         // RESET FIELDS
                         nameField.setText("");
