@@ -280,10 +280,8 @@ public class LoginUI extends JFrame {
                                                 }
                                                 // OTHER ROLES
                                                 else {
-
-                                                        new DashboardUI(role);
-
-                                                        dispose();
+                                                        new AdminDashboard();
+                                                        dispose(); // Close Login Window
                                                 }
                                         } else {
 
