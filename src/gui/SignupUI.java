@@ -71,9 +71,17 @@ public class SignupUI extends JFrame {
         rightPanel.setBackground(bgColor);
         rightPanel.setLayout(null);
 
+        ShadowPanel shadowPanel = new ShadowPanel();
+        shadowPanel.setBounds(20, 20, 400, 580);
+        shadowPanel.setShadowColor(new Color(0, 0, 0, 6));
+        shadowPanel.setRadius(70);
+        shadowPanel.setBackground(Color.WHITE);
+        shadowPanel.setLayout(null);
+        rightPanel.add(shadowPanel);
+
         // Main title sign up
         JLabel title = new JLabel("Sign UP");
-        title.setBounds(130, 20, 500, 80);
+        title.setBounds(130, 30, 500, 80);
         title.setFont(new Font("Segoe UI", Font.BOLD, 50));
         title.setForeground(fgColor); // use the main forground color here
 
@@ -136,8 +144,8 @@ public class SignupUI extends JFrame {
         RoundedPasswordField passwordTextField = new RoundedPasswordField(20);
         passwordTextField.setBounds(150, 380, 220, 30);
 
-        JLabel cPasswordLabel = new JLabel("Confirm Password:");
-        cPasswordLabel.setBounds(20, 435, 150, 25);
+        JLabel cPasswordLabel = new JLabel("Confirm:");
+        cPasswordLabel.setBounds(80, 435, 150, 25);
         cPasswordLabel.setFont(new Font("Segoe UI", Font.BOLD, 14));
         cPasswordLabel.setForeground(fgColor);
 
@@ -145,8 +153,9 @@ public class SignupUI extends JFrame {
         cPasswordTextField.setBounds(150, 430, 220, 30);
 
         RoundedButton signupButton = new RoundedButton("Sign Up");
-        signupButton.setBounds(80, 490, 280, 30);
+        signupButton.setBounds(80, 490, 280, 40);
         signupButton.setMargin(new Insets(5, 10, 5, 10));
+        signupButton.setFont(new Font("Segoe UI",Font.BOLD,16));
         signupButton.setForeground(bgColor);
         signupButton.setBackground(fgColor);
 
@@ -174,6 +183,7 @@ public class SignupUI extends JFrame {
         rightPanel.add(cPasswordTextField);
         rightPanel.add(signupButton);
         rightPanel.add(loginText);
+        rightPanel.add(shadowPanel);
         // ADD BOTH PANELS on to the frame
         add(leftPanel, BorderLayout.CENTER);
         add(rightPanel, BorderLayout.EAST);
